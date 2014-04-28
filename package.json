@@ -1,0 +1,25 @@
+{
+  "name": "synapse-common",
+  "version": "0.0.0",
+  "description": "Common libraries for React projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/synapsestudios/synapse-common.git"
+  },
+  "peerDependencies": {
+    "underscore": "^1.6.0",
+    "backbone": "^1.1.0",
+    "jquery": "^2.1.0",
+    "hammerjs": "^1.1.0",
+    "react": "^0.10.0"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/synapsestudios/synapse-common/issues"
+  },
+  "homepage": "https://github.com/synapsestudios/synapse-common"
+}
