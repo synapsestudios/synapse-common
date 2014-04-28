@@ -2,10 +2,9 @@
 'use strict';
 
 var _             = require('underscore');
-var React         = require('react');
 var NavigateMixin = require('../mixins/navigate');
 
-module.exports = function(router) {
+module.exports = function(React, router) {
     React.DOM.$a = React.DOM.a;
 
     React.DOM.a = function (props) {
