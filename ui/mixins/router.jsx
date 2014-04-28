@@ -3,7 +3,7 @@
 
 var _        = require('underscore');
 var window   = require('jswindow-shim');
-var $        = require('frontend-lib-loaders').jquery(window);
+var $        = require('../../loaders/jquery')(window);
 var Router   = require('../../lib/router');
 var mediator = require('../../lib/mediator');
 
