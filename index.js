@@ -21,3 +21,5 @@ exports.mixins = {
     router   : require('./ui/mixins/router'),
     seo      : require('./ui/mixins/seo')
 };
+
+exports.exoskeleton = require('./lib/exoskeleton');
