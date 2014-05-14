@@ -7,10 +7,6 @@ var $        = require('../../loaders/jquery')(window);
 module.exports = {
     componentDidMount : function()
     {
-        if ( ! this.displayName) {
-            throw 'displayName must be set on a component in order to use the SEO mixin';
-        }
-
         if ( ! this.seo) {
             throw 'Missing SEO object';
         }
@@ -45,19 +41,17 @@ module.exports = {
             return;
         }
 
-        throw 'Wrong type for title on route ' + this.displayName;
+        throw 'Wrong type for component title';
     },
 
     updateMeta : function(meta)
     {
-        var name = this.displayName;
-
         if (_.isFunction(meta)) {
             meta = meta(this.props);
         }
 
         if (! _.isArray(meta)) {
-            throw 'meta must be an array or a callback that returns an array (route: ' + name + ')';
+            throw 'meta must be an array or a callback that returns an array';
         }
 
         $('meta[data-route]').remove();
@@ -65,7 +59,7 @@ module.exports = {
         _.each(meta, function(tag) {
             var newTag = $('<meta>');
 
-            newTag.attr('data-route', name);
+            newTag.attr('data-creator', 'SeoMixin');
 
             _.each(tag, function(value, name) {
                 newTag.prop(name, value);
