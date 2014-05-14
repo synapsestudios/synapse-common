@@ -18,5 +18,6 @@ exports.lib = {
 exports.mixins = {
     events   : require('./ui/mixins/events'),
     navigate : require('./ui/mixins/navigate'),
-    router   : require('./ui/mixins/router')
+    router   : require('./ui/mixins/router'),
+    seo      : require('./ui/mixins/seo')
 };
