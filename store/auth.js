@@ -5,7 +5,7 @@ var HttpStore = require('./http');
 
 var AuthStore = function() {};
 
-_.extend(AuthStore, HttpStore);
+_.extend(AuthStore.prototype, HttpStore.prototype);
 
 AuthStore.prototype.setTokenStore = function(tokenStore)
 {
