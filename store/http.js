@@ -11,7 +11,7 @@ var CHANGE = 'change',
 var HttpStore = function() {};
 
 _.extend(HttpStore.prototype, BaseStore.prototype);
-_.extend(HttpStore.prototype, SyncMachine.prototype);
+_.extend(HttpStore.prototype, SyncMachine);
 
 HttpStore.prototype.getConfig = function() {
     if (this.config) {
