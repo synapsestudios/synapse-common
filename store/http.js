@@ -2,7 +2,7 @@
 
 var _            = require('underscore');
 var http         = require('http');
-var EventEmitter = require('events').EventEmitter;
+var BaseStore    = require('./base');
 var SyncMachine  = require('../lib/sync-machine');
 
 var CHANGE = 'change',
@@ -10,8 +10,8 @@ var CHANGE = 'change',
 
 var HttpStore = function() {};
 
-_.extend(HttpStore, EventEmitter);
-_.extend(HttpStore, SyncMachine);
+_.extend(HttpStore.prototype, BaseStore.prototype);
+_.extend(HttpStore.prototype, SyncMachine.prototype);
 
 HttpStore.prototype.getConfig = function() {
     if (this.config) {
