@@ -24,8 +24,8 @@ HttpStore.prototype._getRequestOptions = function(method, path)
     var config = this.getConfig();
 
     return {
-        hostname : config.api.hostname,
-        port     : config.api.port,
+        hostname : config.hostname,
+        port     : config.port,
         method   : method,
         path     : path
     };
