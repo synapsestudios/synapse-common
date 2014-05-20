@@ -3,6 +3,7 @@
 var _            = require('underscore');
 var http         = require('http');
 var EventEmitter = require('events').EventEmitter;
+var SyncMachine  = require('../lib/sync-machine');
 
 var CHANGE = 'change',
     ERROR  = 'error';
@@ -10,6 +11,7 @@ var CHANGE = 'change',
 var HttpStore = function() {};
 
 _.extend(HttpStore, EventEmitter);
+_.extend(HttpStore, SyncMachine);
 
 HttpStore.prototype.getConfig = function() {
     if (this.config) {
@@ -31,8 +33,9 @@ HttpStore.prototype._getRequestOptions = function(method, path)
     };
 };
 
-HttpStore.prototype.apiRequest = function(method, path, data)
+HttpStore.prototype.apiRequest = function(method, path, data, cb)
 {
+    this.beginSync();
     var options = this._getRequestOptions(method, path);
 
     var self = this;
@@ -45,11 +48,21 @@ HttpStore.prototype.apiRequest = function(method, path, data)
         });
 
         response.on('end', function() {
+            if (_.isFunction(cb)) {
+                cb(false, JSON.parse(responseText));
+            }
+
+            this.finishSync();
             self.emit(CHANGE);
         });
     });
 
     req.on('error', function(e) {
+        if (_.isFunction(cb)) {
+            cb(e);
+        }
+
+        this.abortSync();
         self.emit(ERROR, e);
     });
 
