@@ -5,7 +5,7 @@ var React = require('react');
 
 module.exports = {
     propTypes : {
-        stores : React.propTypes.array
+        stores : React.PropTypes.array
     },
 
     _boundListener : null,
