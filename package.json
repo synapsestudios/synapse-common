@@ -12,10 +12,7 @@
   },
   "peerDependencies": {
     "underscore": "^1.6.0",
-    "backbone": "^1.1.0",
-    "jquery": "^2.1.0",
-    "hammerjs": "^1.1.0",
-    "react": "^0.10.0"
+    "jquery": "^2.1.0"
   },
   "author": "",
   "bugs": {
