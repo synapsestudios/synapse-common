@@ -61,7 +61,7 @@ var HttpStore = BaseStore.extend({
                     cb(false, JSON.parse(responseText));
                 }
 
-                this.finishSync();
+                self.finishSync();
                 self.emit(CHANGE);
             });
         });
