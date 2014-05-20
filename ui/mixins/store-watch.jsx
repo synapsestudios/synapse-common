@@ -17,7 +17,9 @@ module.exports = {
 
         var self;
         _.each(this.props.stores, function(store) {
-            self._boundListener = _.bind(self.getStateFromStores, self);
+            self._boundListener = _.bind(function() {
+                self.setState(self.getStateFromStores);
+            }, self);
             store.on('change', self._boundListener);
         });
     },
