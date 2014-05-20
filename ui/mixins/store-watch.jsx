@@ -15,7 +15,7 @@ module.exports = {
             return;
         }
 
-        var self;
+        var self = this;
         _.each(this.props.stores, function(store) {
             self._boundListener = _.bind(function() {
                 self.setState(self.getStateFromStores());
