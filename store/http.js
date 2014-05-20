@@ -26,7 +26,11 @@ var HttpStore = BaseStore.extend({
             hostname : config.hostname,
             port     : config.port,
             method   : method,
-            path     : path
+            path     : path,
+            headers  : {
+                'Accept'       : 'application/json',
+                'Content-Type' : 'application/json'
+            }
         };
     },
 
