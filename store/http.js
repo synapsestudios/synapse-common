@@ -46,7 +46,16 @@ var HttpStore = BaseStore.extend({
 
             response.on('end', function() {
                 if (_.isFunction(cb)) {
+                    var json;
+                    try {
+                        json = JSON.parse(responseText);
+                    } catch (e) {
+                        cb({ error: e }, response);
+                        return;
+                    }
+
                     cb(false, JSON.parse(responseText));
+                    return;
                 }
 
                 this.finishSync();
