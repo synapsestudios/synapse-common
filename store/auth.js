@@ -3,28 +3,27 @@
 var _         = require('underscore');
 var HttpStore = require('./http');
 
-var AuthStore = function() {};
+var AuthStore = HttpStore.extend({
+    setTokenStore : function(tokenStore)
+    {
+        this.tokenStore = tokenStore;
+    },
 
-_.extend(AuthStore.prototype, HttpStore.prototype);
+    _getRequestOptions : function(method, path)
+    {
+         var options = HttpStore.prototype._getRequestOptions.apply(this, arguments);
 
-AuthStore.prototype.setTokenStore = function(tokenStore)
-{
-    this.tokenStore = tokenStore;
-};
+         if (! this.tokenStore) {
+            throw "Missing tokenStore";
+         }
 
-AuthStore.prototype._getRequestOptions = function(method, path)
-{
-     var options = HttpStore.prototype._getRequestOptions.apply(this, arguments);
+         options.headers = options.headers || {};
+         options.headers = _.extend(options.headers, {
+            Authorization : 'Bearer ' + this.tokenStore.getAccessToken()
+         });
 
-     if (! this.tokenStore) {
-        throw "Missing tokenStore";
-     }
-
-     options.headers = _.extend(options.headers, {
-        Authorization : 'Bearer ' + this.tokenStore.getAccessToken()
-     });
-
-    return options;
-};
+        return options;
+    }
+});
 
 module.exports = AuthStore;

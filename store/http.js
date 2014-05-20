@@ -8,69 +8,70 @@ var SyncMachine  = require('../lib/sync-machine');
 var CHANGE = 'change',
     ERROR  = 'error';
 
-var HttpStore = function() {};
+var HttpStore = BaseStore.extend({
 
-_.extend(HttpStore.prototype, BaseStore.prototype);
-_.extend(HttpStore.prototype, SyncMachine);
-
-HttpStore.prototype.getConfig = function() {
-    if (this.config) {
-        return this.config;
-    }
-
-    throw 'You must extend getConfig or set this.config with a hostname and port';
-};
-
-HttpStore.prototype._getRequestOptions = function(method, path)
-{
-    var config = this.getConfig();
-
-    return {
-        hostname : config.hostname,
-        port     : config.port,
-        method   : method,
-        path     : path
-    };
-};
-
-HttpStore.prototype.apiRequest = function(method, path, data, cb)
-{
-    this.beginSync();
-    var options = this._getRequestOptions(method, path);
-
-    var self = this;
-
-    var req = http.request(options, function(response) {
-        var responseText = '';
-
-        response.on('data', function(chunk) {
-            responseText += chunk;
-        });
-
-        response.on('end', function() {
-            if (_.isFunction(cb)) {
-                cb(false, JSON.parse(responseText));
-            }
-
-            this.finishSync();
-            self.emit(CHANGE);
-        });
-    });
-
-    req.on('error', function(e) {
-        if (_.isFunction(cb)) {
-            cb(e);
+    getConfig : function() {
+        if (this.config) {
+            return this.config;
         }
 
-        this.abortSync();
-        self.emit(ERROR, e);
-    });
+        throw 'You must extend getConfig or set this.config with a hostname and port';
+    },
 
-    if (data) {
-        req.write(JSON.stringify(data));
+    _getRequestOptions : function(method, path)
+    {
+        var config = this.getConfig();
+
+        return {
+            hostname : config.hostname,
+            port     : config.port,
+            method   : method,
+            path     : path
+        };
+    },
+
+    apiRequest : function(method, path, data, cb)
+    {
+        this.beginSync();
+        var options = this._getRequestOptions(method, path);
+
+        var self = this;
+
+        var req = http.request(options, function(response) {
+            var responseText = '';
+
+            response.on('data', function(chunk) {
+                responseText += chunk;
+            });
+
+            response.on('end', function() {
+                if (_.isFunction(cb)) {
+                    cb(false, JSON.parse(responseText));
+                }
+
+                this.finishSync();
+                self.emit(CHANGE);
+            });
+        });
+
+        req.on('error', function(e) {
+            if (_.isFunction(cb)) {
+                cb(e);
+            }
+
+            this.abortSync();
+            self.emit(ERROR, e);
+        });
+
+        if (data) {
+            req.write(JSON.stringify(data));
+        }
+
+        req.end();
     }
 
-    req.end();
-};
+});
+
+_.extend(HttpStore.prototype, SyncMachine);
 
 module.exports = HttpStore;
