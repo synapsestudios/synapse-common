@@ -30,7 +30,7 @@ module.exports = {
             return;
         }
 
-        var self;
+        var self = this;
         _.each(this.props.stores, function(store) {
             store.removeListener('change', self._boundListener);
         });
