@@ -16,10 +16,11 @@ module.exports = {
         }
 
         var self = this;
+        this._boundListener = _.bind(function() {
+            self.setState(self.getStateFromStores());
+        }, self);
+
         _.each(this.props.stores, function(store) {
-            self._boundListener = _.bind(function() {
-                self.setState(self.getStateFromStores());
-            }, self);
             store.on('change', self._boundListener);
         });
     },
