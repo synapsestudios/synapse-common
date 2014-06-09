@@ -54,7 +54,7 @@ var HttpStore = BaseStore.extend({
                     try {
                         json = JSON.parse(responseText);
                     } catch (e) {
-                        cb({ error: e }, response);
+                        cb({ error: e, response : response });
                         return;
                     }
 
