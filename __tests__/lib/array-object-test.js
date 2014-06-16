@@ -1,8 +1,10 @@
 'use strict';
 
-var componentPath = '../../lib/array-object';
+var componentPath      = '../../lib/array-object';
+var componentErrorPath = '../../lib/array-object-error';
 
 jest.dontMock(componentPath);
+jest.dontMock(componentErrorPath);
 jest.dontMock('underscore');
 
 describe('array-object', function() {
@@ -85,6 +87,8 @@ describe('array-object', function() {
     });
 
     describe('edit', function() {
+        var ArrayObjectError = require(componentErrorPath);
+
         it('edits the element at the specified index', function () {
             arrayObject.push('foo');
 
@@ -99,28 +103,32 @@ describe('array-object', function() {
 
         it('throws an exception if index is not an integer', function () {
             var invalidIndex = 'foo',
-                expectedExceptionMessage;
+                expectedError,
+                expectedErrorMessage;
 
-            expectedExceptionMessage = 'Index must be an integer, ' + invalidIndex + ' provided';
+            expectedErrorMessage = 'Index must be an integer, ' + invalidIndex + ' provided';
+            expectedError        = new ArrayObjectError(expectedErrorMessage);
 
             expect(function () {
                 arrayObject.edit(invalidIndex, 'bar');
-            }).toThrow(expectedExceptionMessage);
+            }).toThrow(expectedError);
         });
 
         it('throws an exception if index has not yet been set', function() {
             var outOfBoundsIndex = 17,
-                expectedExceptionMessage;
+                expectedError,
+                expectedErrorMessage;
 
             arrayObject.push(1);
             arrayObject.push(2);
             arrayObject.push(3);
 
-            expectedExceptionMessage = 'Element ' + outOfBoundsIndex + ' not yet defined in arrayObject';
+            expectedErrorMessage = 'Element ' + outOfBoundsIndex + ' not yet defined in arrayObject';
+            expectedError        = new ArrayObjectError(expectedErrorMessage);
 
             expect(function () {
                 arrayObject.edit(outOfBoundsIndex, 'bar');
-            }).toThrow(expectedExceptionMessage);
+            }).toThrow(expectedError);
         });
     });
 
