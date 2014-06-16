@@ -1,6 +1,7 @@
 'use strict';
 
 jest.dontMock('../../lib/array-object');
+jest.dontMock('underscore');
 
 describe('array-object', function() {
     var arrayObject;
@@ -15,7 +16,9 @@ describe('array-object', function() {
 
             arrayObject.push(value);
 
-            expect(arrayObject.get(0)).toBe(value);
+            expect(
+                arrayObject.get(0)
+            ).toBe(value);
         });
     });
 
@@ -27,11 +30,15 @@ describe('array-object', function() {
             arrayObject.push('string');
             arrayObject.push(thirdValue);
 
-            expect(arrayObject.get(2)).toBe(thirdValue);
+            expect(
+                arrayObject.get(2)
+            ).toBe(thirdValue);
 
             arrayObject.remove(2);
 
-            expect(arrayObject.get(2)).toBe(undefined);
+            expect(
+                arrayObject.get(2)
+            ).toBe(undefined);
         });
     });
 
@@ -43,7 +50,9 @@ describe('array-object', function() {
 
             arrayObject.edit(0, 'bar');
 
-            expect(arrayObject.get(0)).toBe('bar');
+            expect(
+                arrayObject.get(0)
+            ).toBe('bar');
         });
 
         it('throws an exception if index is not an integer', function () {
@@ -72,4 +81,81 @@ describe('array-object', function() {
             }).toThrow(expectedExceptionMessage);
         });
     });
+
+    describe('get', function() {
+        it('gets the object at the specified index', function() {
+            arrayObject.push('foo');
+            arrayObject.push('bar');
+            arrayObject.push('baz');
+
+            expect(
+                arrayObject.get(0)
+            ).toBe('foo');
+
+            expect(
+                arrayObject.get(1)
+            ).toBe('bar');
+
+            expect(
+                arrayObject.get(2)
+            ).toBe('baz');
+        });
+    });
+
+    describe('getAsArray', function() {
+        it('returns an empty array if no items pushed onto array-object', function() {
+            expect(
+                arrayObject.getAsArray()
+            ).toEqual(
+                []
+            );
+        });
+
+        it('returns the array-object as an array', function() {
+            var expectedArrayValue;
+
+            arrayObject.push('foo');
+            arrayObject.push('bar');
+            arrayObject.push('baz');
+            arrayObject.push(1);
+            arrayObject.push(2);
+            arrayObject.push(3.14159);
+
+            expectedArrayValue = [
+                'foo',
+                'bar',
+                'baz',
+                1,
+                2,
+                3.14159,
+            ];
+
+            expect(
+                arrayObject.getAsArray()
+            ).toEqual(
+                expectedArrayValue
+            );
+        });
+
+        it('does not return elements that have been deleted inside the array', function() {
+            arrayObject.push('foo');
+            arrayObject.push('bar');
+            arrayObject.push('baz');
+
+            // Demonstrate first that the array returned contains the value to be removed
+            expect(
+                arrayObject.getAsArray()
+            ).toContain(
+                'bar'
+            );
+
+            arrayObject.remove(1);
+
+            expect(
+                arrayObject.getAsArray()
+            ).not.toContain(
+                'bar'
+            );
+        });
+    })
 });
