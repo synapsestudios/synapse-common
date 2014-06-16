@@ -1,13 +1,15 @@
 'use strict';
 
-jest.dontMock('../../lib/array-object');
+var componentPath = '../../lib/array-object';
+
+jest.dontMock(componentPath);
 jest.dontMock('underscore');
 
 describe('array-object', function() {
     var arrayObject;
 
     beforeEach(function() {
-        arrayObject = require('../../lib/array-object');
+        arrayObject = require(componentPath);
     });
 
     describe('push', function() {
