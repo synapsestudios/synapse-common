@@ -1,7 +1,9 @@
 'use strict';
 
 var _            = require('underscore');
+var Q            = require('q');
 var http         = require('http');
+var HttpError    = require('./http-error');
 var BaseStore    = require('./base');
 var SyncMachine  = require('../lib/sync-machine');
 
@@ -34,52 +36,53 @@ var HttpStore = BaseStore.extend({
         };
     },
 
-    apiRequest : function(method, path, data, cb)
+    apiRequest : function(method, path, data)
     {
-        this.beginSync();
-        var options = this._getRequestOptions(method, path);
+        return Q.Promise(_.bind(function(resolve, reject) {
+            this.beginSync();
+            var options  = this._getRequestOptions(method, path);
+            var self     = this;
 
-        var self = this;
+            var req = http.request(options, function(response) {
+                var responseText = '';
 
-        var req = http.request(options, function(response) {
-            var responseText = '';
+                response.on('data', function(chunk) {
+                    responseText += chunk;
+                });
 
-            response.on('data', function(chunk) {
-                responseText += chunk;
-            });
+                response.on('end', function() {
+                    var responseData;
 
-            response.on('end', function() {
-                if (_.isFunction(cb)) {
-                    var json;
                     try {
-                        json = JSON.parse(responseText);
+                        responseData = JSON.parse(responseText);
                     } catch (e) {
-                        cb({ error: e, response : response });
-                        return;
+                        responseData = responseText;
                     }
 
-                    cb(false, JSON.parse(responseText));
-                }
-
-                self.finishSync();
-                self.emit(CHANGE);
+                    if (response.statusCode >= 400) {
+                        self.abortSync();
+                        reject(new HttpError(responseData, response));
+                    } else {
+                        self.finishSync();
+                        self.emit(CHANGE);
+                        resolve(responseData);
+                    }
+                });
             });
-        });
 
-        req.on('error', function(e) {
-            if (_.isFunction(cb)) {
-                cb(e);
+            req.on('error', function(e) {
+                reject(e);
+
+                this.abortSync();
+                self.emit(ERROR, e);
+            });
+
+            if (data) {
+                req.write(JSON.stringify(data));
             }
 
-            this.abortSync();
-            self.emit(ERROR, e);
-        });
-
-        if (data) {
-            req.write(JSON.stringify(data));
-        }
-
-        req.end();
+            req.end();
+        }, this));
     }
 
 });
