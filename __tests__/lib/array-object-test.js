@@ -34,4 +34,42 @@ describe('array-object', function() {
             expect(arrayObject.get(2)).toBe(undefined);
         });
     });
+
+    describe('edit', function() {
+        it('edits the element at the specified index', function () {
+            arrayObject.push('foo');
+
+            expect(arrayObject.get(0)).toBe('foo');
+
+            arrayObject.edit(0, 'bar');
+
+            expect(arrayObject.get(0)).toBe('bar');
+        });
+
+        it('throws an exception if index is not an integer', function () {
+            var invalidIndex = 'foo',
+                expectedExceptionMessage;
+
+            expectedExceptionMessage = 'Index must be an integer, ' + invalidIndex + ' provided';
+
+            expect(function () {
+                arrayObject.edit(invalidIndex, 'bar');
+            }).toThrow(expectedExceptionMessage);
+        });
+
+        it('throws an exception if index has not yet been set', function() {
+            var outOfBoundsIndex = 17,
+                expectedExceptionMessage;
+
+            arrayObject.push(1);
+            arrayObject.push(2);
+            arrayObject.push(3);
+
+            expectedExceptionMessage = 'Element ' + outOfBoundsIndex + ' not yet defined in arrayObject';
+
+            expect(function () {
+                arrayObject.edit(outOfBoundsIndex, 'bar');
+            }).toThrow(expectedExceptionMessage);
+        });
+    });
 });
