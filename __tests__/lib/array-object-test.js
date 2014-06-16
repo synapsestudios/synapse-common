@@ -20,6 +20,46 @@ describe('array-object', function() {
                 arrayObject.get(0)
             ).toBe(value);
         });
+
+        it('increments the key used for adding new elements', function () {
+            expect(
+                arrayObject.count
+            ).toBe(0);
+
+            arrayObject.push('foo');
+
+            expect(
+                arrayObject.count
+            ).toBe(1);
+
+            arrayObject.push('food');
+
+            expect(
+                arrayObject.count
+            ).toBe(2);
+
+            arrayObject.push('foosball');
+
+            expect(
+                arrayObject.count
+            ).toBe(3);
+        });
+
+        it('does not re-use a key after its element has been removed', function () {
+            arrayObject.push('foo');
+            arrayObject.push('food');
+
+            expect(
+                arrayObject.get(1)
+            ).toBe('food');
+
+            arrayObject.remove(1);
+            arrayObject.push('foosball');
+
+            expect(
+                arrayObject.get(1)
+            ).toBeUndefined();
+        });
     });
 
     describe('remove', function() {
@@ -38,7 +78,7 @@ describe('array-object', function() {
 
             expect(
                 arrayObject.get(2)
-            ).toBe(undefined);
+            ).toBeUndefined();
         });
     });
 
