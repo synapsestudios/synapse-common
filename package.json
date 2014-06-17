@@ -16,7 +16,8 @@
   "peerDependencies": {
     "underscore": "^1.6.0",
     "jquery": "^2.1.0",
-    "react": "^0.10.0"
+    "react": "^0.10.0",
+    "q": "^1.0.0"
   },
   "author": "",
   "bugs": {
