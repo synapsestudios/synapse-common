@@ -8,10 +8,11 @@ jest.dontMock(componentErrorPath);
 jest.dontMock('underscore');
 
 describe('array-object', function() {
-    var arrayObject;
+    var ArrayObject = require(componentPath),
+        arrayObject;
 
     beforeEach(function() {
-        arrayObject = require(componentPath);
+        arrayObject = new ArrayObject();
     });
 
     describe('push', function() {
