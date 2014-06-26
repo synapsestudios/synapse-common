@@ -4,7 +4,7 @@ var _            = require('underscore');
 var Q            = require('q');
 var http         = require('http');
 var HttpError    = require('./error');
-var Extendable   = require('./extendable');
+var Extendable   = require('../lib/extendable');
 
 var HttpGateway = Extendable.extend({
 
