@@ -35,7 +35,6 @@ var HttpGateway = Extendable.extend({
     apiRequest : function(method, path, data)
     {
         return Q.Promise(_.bind(function(resolve, reject) {
-            this.beginSync();
             var options  = this._getRequestOptions(method, path);
 
             var req = http.request(options, function(response) {
