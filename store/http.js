@@ -1,8 +1,8 @@
 'use strict';
 
+var BaseStore    = require('./base');
 var HttpGateway  = require('../http/gateway');
-var EventEmitter = require('events').EventEmitter;
 
-var HttpStore = HttpGateway.extend(EventEmitter.prototype);
+var HttpStore = BaseStore.extend(HttpGateway.prototype);
 
 module.exports = HttpStore;

@@ -1,29 +1,8 @@
 'use strict';
 
-var _         = require('underscore');
-var HttpStore = require('./http');
+var BaseStore       = require('./base');
+var HttpAuthGateway = require('../http/auth-gateway');
 
-var AuthStore = HttpStore.extend({
-    setTokenStore : function(tokenStore)
-    {
-        this.tokenStore = tokenStore;
-    },
-
-    _getRequestOptions : function(method, path)
-    {
-         var options = HttpStore.prototype._getRequestOptions.apply(this, arguments);
-
-         if (! this.tokenStore) {
-            throw "Missing tokenStore";
-         }
-
-         options.headers = options.headers || {};
-         options.headers = _.extend(options.headers, {
-            Authorization : 'Bearer ' + this.tokenStore.getAccessToken()
-         });
-
-        return options;
-    }
-});
+var AuthStore = BaseStore.extend(HttpAuthGateway.prototype);
 
 module.exports = AuthStore;
