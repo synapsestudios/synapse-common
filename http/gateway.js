@@ -66,6 +66,10 @@ var HttpGateway = Extendable.extend({
             });
 
             if (data) {
+                if (_.isObject(data)) {
+                    data = JSON.stringify(data);
+                }
+
                 req.write(data);
             }
 
