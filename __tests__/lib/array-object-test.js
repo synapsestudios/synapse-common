@@ -208,5 +208,5 @@ describe('array-object', function() {
                 'bar'
             );
         });
-    })
+    });
 });
