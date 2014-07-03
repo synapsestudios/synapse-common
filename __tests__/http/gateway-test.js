@@ -1,6 +1,6 @@
 'use strict';
 
-var componentPath     = '../../http/gateway';
+var componentPath = '../../http/gateway';
 
 jest.dontMock(componentPath);
 jest.dontMock('../../lib/extendable');
