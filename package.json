@@ -1,7 +1,12 @@
 {
   "name": "synapse-common",
-  "version": "0.0.0",
   "description": "Common libraries for React projects",
+  "version": "0.0.0",
+  "homepage": "https://github.com/synapsestudios/synapse-common",
+  "author": "Synapse Studios",
+  "bugs": {
+    "url": "https://github.com/synapsestudios/synapse-common/issues"
+  },
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -17,10 +22,5 @@
     "q"          : "~1.0.0",
     "react"      : "~0.11.0",
     "underscore" : "~1.6.0"
-  },
-  "author": "",
-  "bugs": {
-    "url": "https://github.com/synapsestudios/synapse-common/issues"
-  },
-  "homepage": "https://github.com/synapsestudios/synapse-common"
+  }
 }
