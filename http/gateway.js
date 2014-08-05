@@ -5,6 +5,7 @@ var Q            = require('q');
 var http         = require('http');
 var HttpError    = require('./error');
 var Extendable   = require('../lib/extendable');
+var dispatcher   = require('../lib/dispatcher');
 
 var HttpGateway = Extendable.extend({
 
@@ -50,6 +51,9 @@ var HttpGateway = Extendable.extend({
                     }
 
                     if (response.statusCode >= 400) {
+                        if (response.statusCode === 401) {
+                            dispatcher.emit('401-response-received');
+                        }
                         reject(new HttpError(responseData, response));
                     } else {
                         resolve(responseData);
