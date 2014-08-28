@@ -1,7 +1,7 @@
 {
   "name": "synapse-common",
   "description": "Common libraries for React projects",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "homepage": "https://github.com/synapsestudios/synapse-common",
   "author": "Synapse Studios",
   "license": "MIT",
