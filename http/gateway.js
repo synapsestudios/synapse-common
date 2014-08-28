@@ -79,14 +79,17 @@ var HttpGateway = Extendable.extend({
 
     _getRequestOptions : function(method, path)
     {
-        var config = this.getConfig();
+        var config;
+
+        config = this.getConfig();
 
         return {
-            hostname : config.hostname,
-            port     : config.port,
-            method   : method,
-            path     : path,
-            headers  : {
+            hostname        : config.hostname,
+            port            : config.port,
+            method          : method,
+            path            : path,
+            withCredentials : (config.withCredentials === true),
+            headers         : {
                 'Accept'       : 'application/json',
                 'Content-Type' : 'application/json'
             }
