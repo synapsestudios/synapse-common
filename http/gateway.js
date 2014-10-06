@@ -3,6 +3,7 @@
 var _            = require('underscore');
 var Q            = require('q');
 var http         = require('http');
+var https        = require('https');
 var HttpError    = require('./error');
 var Extendable   = require('../lib/extendable');
 var dispatcher   = require('../lib/dispatcher');
@@ -27,6 +28,8 @@ var HttpGateway = Extendable.extend({
      */
     apiRequest : function(method, path, data)
     {
+        var gateway = this;
+
         if (data && method === 'GET') {
             path = path + '?' + this._toQuery(data);
         }
@@ -34,7 +37,7 @@ var HttpGateway = Extendable.extend({
         return Q.Promise(_.bind(function(resolve, reject) {
             var options  = this._getRequestOptions(method, path);
 
-            var req = http.request(options, function(response) {
+            var req = (gateway.config.secure ? https : http).request(options, function(response) {
                 var responseText = '';
 
                 response.on('data', function(chunk) {
