@@ -37,7 +37,7 @@ var HttpGateway = Extendable.extend({
         return Q.Promise(_.bind(function(resolve, reject) {
             var options  = this._getRequestOptions(method, path);
 
-            var req = (gateway.config.secure ? https : http).request(options, function(response) {
+            var req = (gateway.getConfig().secure ? https : http).request(options, function(response) {
                 var responseText = '';
 
                 response.on('data', function(chunk) {
