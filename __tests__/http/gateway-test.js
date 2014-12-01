@@ -1,16 +1,24 @@
+/* global describe, it, beforeEach */
+/* jshint expr: true */
 'use strict';
 
-var componentPath = '../../http/gateway';
-
-jest.dontMock(componentPath);
-jest.dontMock('../../lib/extendable');
-jest.dontMock('underscore');
+var proxyquire = require('proxyquireify')(require);
+var sinon      = require('sinon');
+var expect     = require('chai').expect;
 
 describe('http-gateway', function() {
-    var HttpGateway = require(componentPath),
-        httpGateway;
+    var HttpGateway, httpGateway;
 
     beforeEach(function() {
+        HttpGateway = proxyquire(
+            '../../http/gateway',
+            {
+                'q'       : sinon.spy(),
+                'http'    : sinon.spy(),
+                'https'   : sinon.spy()
+            }
+        );
+
         httpGateway = new HttpGateway();
     });
 
@@ -23,9 +31,7 @@ describe('http-gateway', function() {
 
             var expectedQueryString = 'one=foo&two=bar';
 
-            expect(
-                httpGateway._toQuery(requestData)
-            ).toBe(expectedQueryString);
+            expect(httpGateway._toQuery(requestData)).to.equal(expectedQueryString);
         });
 
         it('converts a request data object with an array into a query string correctly', function() {
@@ -35,9 +41,7 @@ describe('http-gateway', function() {
 
             var expectedQueryString = 'foo%5B%5D=1&foo%5B%5D=2&foo%5B%5D=3';
 
-            expect(
-                httpGateway._toQuery(requestData)
-            ).toBe(expectedQueryString);
+            expect(httpGateway._toQuery(requestData)).to.equal(expectedQueryString);
         });
 
         it('converts a request data object with nested objects into a query string correctly', function() {
@@ -47,9 +51,7 @@ describe('http-gateway', function() {
 
             var expectedQueryString = 'foo%5Bbar%5D=1&foo%5Bbaz%5D=2';
 
-            expect(
-                httpGateway._toQuery(requestData)
-            ).toBe(expectedQueryString);
+            expect(httpGateway._toQuery(requestData)).to.equal(expectedQueryString);
         });
     });
 });
