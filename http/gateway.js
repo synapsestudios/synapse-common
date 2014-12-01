@@ -21,12 +21,13 @@ var HttpGateway = Extendable.extend({
     /**
      * Perform a request to the API
      *
-     * @param  string  method Request method
-     * @param  string  path   Request path
-     * @param  object  data   Request data (if any)
+     * @param  string  method   Request method
+     * @param  string  path     Request path
+     * @param  object  data     Request data (if any)
+     * @param  object  headers  Additional headers (if any)
      * @return promise
      */
-    apiRequest : function(method, path, data)
+    apiRequest : function(method, path, data, headers)
     {
         var gateway = this;
 
@@ -34,8 +35,14 @@ var HttpGateway = Extendable.extend({
             path = path + '?' + this._toQuery(data);
         }
 
+        if (_.isUndefined(headers)) {
+            headers = {};
+        }
+
         return Q.Promise(_.bind(function(resolve, reject) {
-            var options  = this._getRequestOptions(method, path);
+            var options = this._getRequestOptions(method, path);
+
+            _.extend(options.headers, headers);
 
             var req = (gateway.getConfig().secure ? https : http).request(options, function(response) {
                 var responseText = '';
