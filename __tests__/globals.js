@@ -1,2 +1,2 @@
-__BACKEND__     = 'api.usmexpat.vm';
+__BACKEND__     = 'api.project.vm';
 __ENVIRONMENT__ = 'development';
