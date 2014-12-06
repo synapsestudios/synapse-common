@@ -6,7 +6,6 @@ var http         = require('http');
 var https        = require('https');
 var HttpError    = require('./error');
 var Extendable   = require('../lib/extendable');
-var dispatcher   = require('../lib/dispatcher');
 
 var HttpGateway = Extendable.extend({
 
@@ -62,7 +61,7 @@ var HttpGateway = Extendable.extend({
 
                     if (response.statusCode >= 400) {
                         if (response.statusCode === 401) {
-                            dispatcher.emit('401-response-received');
+                            this.handle401(method, path, data, headers, resolve, reject);
                         }
                         reject(new HttpError(responseData, response));
                     } else {
@@ -85,6 +84,20 @@ var HttpGateway = Extendable.extend({
 
             req.end();
         }, this));
+    },
+
+    /**
+     * Called when an api request fails with a 401
+     *
+     * @param  function method
+     * @param  string   path
+     * @param  mixed    data
+     * @param  function resolve
+     * @param  function reject
+     */
+    handle401 : function(method, path, data, headers, resolve, reject)
+    {
+        // override point
     },
 
     _getRequestOptions : function(method, path)

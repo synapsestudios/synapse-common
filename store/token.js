@@ -16,7 +16,8 @@ var TokenStore = Fluxxor.createStore({
             constants.LOGGING_IN, 'onLogin',
             constants.LOGIN_SUCCESSFUL, 'onLoginSuccessful',
             constants.LOGIN_FAILED, 'onLoginFailed',
-            constants.LOGOUT, 'onLogout'
+            constants.LOGOUT, 'onLogout',
+            constants.TOKEN_REFRESHED, 'onRefresh'
         );
     },
 
@@ -51,6 +52,11 @@ var TokenStore = Fluxxor.createStore({
         this.loggedIn = false;
 
         this.emit('change');
+    },
+
+    onRefresh : function(payload)
+    {
+        // stub! update token
     },
 
     getTokenData : function()
