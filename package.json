@@ -47,7 +47,6 @@
   },
   "peerDependencies": {
     "q": "~1.0.0",
-    "react": "~0.11.0",
     "underscore": "~1.6.0"
   }
 }
