@@ -2,6 +2,8 @@
 
 var HttpGateway = require('./gateway');
 var store       = require('store');
+var qs          = require('querystring');
+var constants   = require('../constants');
 
 var HttpAuthGateway = HttpGateway.extend({
 
@@ -17,6 +19,35 @@ var HttpAuthGateway = HttpGateway.extend({
         }
 
         return options;
+    },
+
+    handle401 : function(method, path, data, headers, resolve, reject)
+    {
+        // attempt refresh by calling
+        this.refresh()
+            .then(function(payload) {
+                this.flux.dispatch(constants.TOKEN_REFRESHED, payload);
+                this.apiRequest(method, path, data, headers).then(resolve).fail(reject);
+            })
+            .fail(function(){
+                reject();
+                this.flux.dispatch(constants.LOGOUT);
+            });
+    },
+
+    refresh : function()
+    {
+        var token = store.get('token') || {};
+
+        return this.apiRequest(
+            'POST',
+            '/oauth/token',
+            qs.stringify({
+                grant_type    : 'refresh_token',
+                client_id     : this.config.client_id,
+                refresh_token : token.refresh_token
+            })
+        );
     }
 
 });
