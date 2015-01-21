@@ -6,7 +6,6 @@ var http         = require('http');
 var https        = require('https');
 var HttpError    = require('./error');
 var Extendable   = require('../lib/extendable');
-var dispatcher   = require('../lib/dispatcher');
 
 var HttpGateway = Extendable.extend({
 
@@ -31,16 +30,12 @@ var HttpGateway = Extendable.extend({
     {
         var gateway = this;
 
-        if (data && method === 'GET') {
-            path = path + '?' + this._toQuery(data);
-        }
-
         if (_.isUndefined(headers)) {
             headers = {};
         }
 
-        return Q.Promise(_.bind(function(resolve, reject) {
-            var options = this._getRequestOptions(method, path);
+        return Q.Promise(function(resolve, reject) {
+            var options = gateway.getRequestOptions(method, path, data);
 
             _.extend(options.headers, headers);
 
@@ -62,8 +57,9 @@ var HttpGateway = Extendable.extend({
 
                     if (response.statusCode >= 400) {
                         if (response.statusCode === 401) {
-                            dispatcher.emit('401-response-received');
+                            gateway.handle401(resolve, reject, method, path, data, headers);
                         }
+
                         reject(new HttpError(responseData, response));
                     } else {
                         resolve(responseData);
@@ -84,14 +80,22 @@ var HttpGateway = Extendable.extend({
             }
 
             req.end();
-        }, this));
+        });
     },
 
-    _getRequestOptions : function(method, path)
+    getRequestOptions : function(method, path, data)
     {
-        var config;
+        var config, queryString;
 
         config = this.getConfig();
+
+        if (data && method === 'GET') {
+            queryString = this.toQuery(data);
+
+            if (queryString) {
+                path = path + '?' + queryString;
+            }
+        }
 
         return {
             hostname        : config.hostname,
@@ -112,9 +116,9 @@ var HttpGateway = Extendable.extend({
      * @param  object data Query data in object form
      * @return string
      */
-    _toQuery : function(data)
+    toQuery : function(data)
     {
-        return this._buildParams('', data);
+        return this.buildParams('', data);
     },
 
     /**
@@ -128,7 +132,7 @@ var HttpGateway = Extendable.extend({
      * @param  bool   top    Is this a recursive call to this function?
      * @return string
      */
-    _buildParams : function(prefix, val, top)
+    buildParams : function(prefix, val, top)
     {
         var instance = this;
 
@@ -136,14 +140,14 @@ var HttpGateway = Extendable.extend({
 
         if (_.isArray(val)) {
             return _.map(val, function(value, key) {
-                return instance._buildParams(top ? key : prefix + '[]', value, false);
+                return instance.buildParams(top ? key : prefix + '[]', value, false);
             }).join('&');
         } else if (_.isObject(val)) {
             return _.map(val, function(value, key) {
-                return instance._buildParams(top ? key : prefix + '[' + key + ']', value, false);
+                return instance.buildParams(top ? key : prefix + '[' + key + ']', value, false);
             }).join('&');
         } else {
-            return this._urlEncode(prefix) + '=' + this._urlEncode(val);
+            return this.urlEncode(prefix) + '=' + this.urlEncode(val);
         }
     },
 
@@ -156,8 +160,17 @@ var HttpGateway = Extendable.extend({
      * @param  string string String to encode
      * @return string
      */
-    _urlEncode : function(string) {
+    urlEncode : function(string)
+    {
         return encodeURIComponent(string).replace(/\%20/g, '+');
+    },
+
+    /**
+     * Handle 401 Unauthorized responses
+     */
+    handle401 : function(resolve, reject, method, path, data, headers)
+    {
+        // Noop
     }
 
 });
