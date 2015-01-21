@@ -47,7 +47,7 @@ var HttpGateway = Extendable.extend({
                 });
 
                 response.on('end', function() {
-                    var responseData;
+                    var responseData, shouldReject;
 
                     try {
                         responseData = JSON.parse(responseText);
@@ -57,8 +57,10 @@ var HttpGateway = Extendable.extend({
 
                     if (response.statusCode >= 400) {
                         if (response.statusCode === 401) {
-                            gateway.handle401(resolve, reject, method, path, data, headers);
-                        } else {
+                            shouldReject = gateway.handle401(resolve, reject, method, path, data, headers);
+                        }
+
+                        if (response.statusCode !== 401 || shouldReject === true) {
                             reject(new HttpError(responseData, response));
                         }
                     } else {
@@ -167,10 +169,12 @@ var HttpGateway = Extendable.extend({
 
     /**
      * Handle 401 Unauthorized responses
+     *
+     * Return true to indicate that 401 will not be handled
      */
     handle401 : function(resolve, reject, method, path, data, headers)
     {
-        // Noop
+        return true;
     }
 
 });
