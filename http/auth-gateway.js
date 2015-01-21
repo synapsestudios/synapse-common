@@ -26,6 +26,16 @@ var HttpAuthGateway = HttpGateway.extend({
      *
      * Assume that the oauth access token has expired and the refresh token
      * needs to be exchanged for a new one.
+     *
+     * The successful response of the refresh token exchange request will be
+     * in the following shape:
+     * {
+     *     "access_token" : "6339f1a7...",
+     *     "expires_in"   : 3600,
+     *     "token_type"   : "bearer",
+     *     "scope"        : null,
+     *     "user_id"      : "1"
+     * }
      */
     handle401 : function(resolve, reject, method, path, data, headers)
     {
@@ -36,8 +46,8 @@ var HttpAuthGateway = HttpGateway.extend({
 
         data = data || {};
 
-        handleSuccess = function (accessToken) {
-            token = _.extend(token, accessToken);
+        handleSuccess = function (response) {
+            token = _.extend(token, response);
 
             store.set('token', token);
 

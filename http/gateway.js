@@ -58,9 +58,9 @@ var HttpGateway = Extendable.extend({
                     if (response.statusCode >= 400) {
                         if (response.statusCode === 401) {
                             gateway.handle401(resolve, reject, method, path, data, headers);
+                        } else {
+                            reject(new HttpError(responseData, response));
                         }
-
-                        reject(new HttpError(responseData, response));
                     } else {
                         resolve(responseData);
                     }
