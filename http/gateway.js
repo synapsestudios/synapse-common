@@ -56,13 +56,7 @@ var HttpGateway = Extendable.extend({
                     }
 
                     if (response.statusCode >= 400) {
-                        if (response.statusCode === 401) {
-                            shouldReject = gateway.handle401(resolve, reject, method, path, data, headers);
-                        }
-
-                        if (response.statusCode !== 401 || shouldReject === true) {
-                            reject(new HttpError(responseData, response));
-                        }
+                        gateway.handleError(response, responseData, resolve, reject, method, path, data, headers);
                     } else {
                         resolve(responseData);
                     }
@@ -168,13 +162,20 @@ var HttpGateway = Extendable.extend({
     },
 
     /**
-     * Handle 401 Unauthorized responses
+     * Handle API request errors
      *
-     * Return true to indicate that 401 will not be handled
+     * @param  {Object}   response     The API response
+     * @param  {Mixed}    responseData The data returned in the response
+     * @param  {Function} resolve      The success callback
+     * @param  {Function} reject       The fail callback
+     * @param  {String}   method       The failed request's method
+     * @param  {String}   path         The failed request's path
+     * @param  {Object}   data         The failed request body data (if any)
+     * @param  {Object}   headers      The extra headers set on the failed request
      */
-    handle401 : function(resolve, reject, method, path, data, headers)
+    handleError : function(response, responseData, resolve, reject, method, path, data, headers)
     {
-        return true;
+        reject(new HttpError(responseData, response));
     }
 
 });

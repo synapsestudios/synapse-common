@@ -22,6 +22,20 @@ var HttpAuthGateway = HttpGateway.extend({
     },
 
     /**
+     * {@inheritDoc}
+     */
+    handleError : function(response, responseData, resolve, reject, method, path, data, headers)
+    {
+        if (response.statusCode === 401) {
+            this.handle401(resolve, reject, method, path, data, headers);
+
+            return;
+        }
+
+        HttpGateway.prototype.handleError(response, responseData, resolve, reject, method, path, data, headers);
+    },
+
+    /**
      * Handle 401 Unauthorized responses
      *
      * Assume that the oauth access token has expired and the refresh token
