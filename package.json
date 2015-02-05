@@ -16,6 +16,10 @@
     "type" : "git",
     "url"  : "https://github.com/synapsestudios/synapse-common.git"
   },
+  "dependencies" : {
+    "q"          : "~1.0.0",
+    "underscore" : "1.7.0"
+  },
   "devDependencies" : {
     "browserify"                   : "5.10.1",
     "chai"                         : "1.9.1",
@@ -44,9 +48,5 @@
     "vinyl-source-stream"          : "0.1.1",
     "watchify"                     : "1.0.2",
     "watchr"                       : "2.4.11"
-  },
-  "peerDependencies" : {
-    "q"          : "~1.0.0",
-    "underscore" : "~1.6.0"
   }
 }
