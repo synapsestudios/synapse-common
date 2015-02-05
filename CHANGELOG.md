@@ -1,3 +1,7 @@
+## [v0.3.0](https://github.com/synapsestudios/synapse-common/compare/v0.2.0...v0.3.0) - 01/21/2015
+### Feature Updates
+- [#29](https://github.com/synapsestudios/synapse-common/pull/29) Exchange refresh token for new access token on 401 in auth gateway.
+
 ## [v0.2.0](https://github.com/synapsestudios/synapse-common/compare/v0.1.2...v0.2.0) - 12/09/2014
 ### Feature Updates
 - [#17](https://github.com/synapsestudios/synapse-common/pull/17) Allow gateway and auth-gateway to use https.
