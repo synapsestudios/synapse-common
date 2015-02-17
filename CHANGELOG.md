@@ -1,3 +1,12 @@
+## [v1.0.0](https://github.com/synapsestudios/synapse-common/compare/v0.3.0...v1.0.0) - 02/05/2015
+### Updates
+- [#14](https://github.com/synapsestudios/synapse-common/pull/14) Make Underscore and Q explicit dependencies.
+
+### Breaking Changes
+- [#20](https://github.com/synapsestudios/synapse-common/pull/20) Remove non-fluxxor stores and Events/SEO mixins.
+- [#22](https://github.com/synapsestudios/synapse-common/pull/22) Remove StoreWatch mixin.
+- [#28](https://github.com/synapsestudios/synapse-common/pull/28) Change `test-helpers` directory to `test-helper`.
+
 ## [v0.3.0](https://github.com/synapsestudios/synapse-common/compare/v0.2.0...v0.3.0) - 01/21/2015
 ### Feature Updates
 - [#29](https://github.com/synapsestudios/synapse-common/pull/29) Exchange refresh token for new access token on 401 in auth gateway.
