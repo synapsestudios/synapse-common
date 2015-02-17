@@ -25,9 +25,9 @@ var using    = require('synapse-common/test-helper/data-provider');
 Pre-0.3.0 -> 0.3.0
 ------------------
 
-### Update clients which override `_getRequestOptions`
+### Update clients which use `_getRequestOptions`, `_toQuery`, and `_buildParams`
 
-In 0.3.0, the base gateway's `_getRequestOptions` method was renamed to `getRequestOptions`. For `client`s that override that method, it should be renamed to follow suit.
+In 0.3.0, the base gateway's `_getRequestOptions` method was renamed to `getRequestOptions`. Also `_toQuery` was renamed to `toQuery` and `_buildParams` was renamed to `buildParams`. For `client`s that use those methods, they should be renamed to follow suit.
 
 ```js
 // < 0.3.0
