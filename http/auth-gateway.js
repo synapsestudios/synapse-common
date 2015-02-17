@@ -7,15 +7,32 @@ var _           = require('underscore');
 
 var HttpAuthGateway = HttpGateway.extend({
 
+    /**
+     * Location in localStorage to store and retrieve the OAuth token
+     *
+     * @type {String}
+     */
+    tokenStorageLocation : 'token',
+
+    /**
+     * Prefix for the authorization header
+     *
+     * @type {String}
+     */
+    authorizationHeaderPrefix : 'Bearer ',
+
+    /**
+     * {@inheritDoc}
+     */
     getRequestOptions : function(method, path, data)
     {
         var options, token;
 
         options = HttpGateway.prototype.getRequestOptions.call(this, method, path, data);
 
-        token = store.get('token');
+        token = store.get(this.tokenStorageLocation);
         if (token) {
-            options.headers.Authorization = 'Bearer' + ' ' + token.access_token;
+            options.headers.Authorization = this.authorizationHeaderPrefix + token.access_token;
         }
 
         return options;
@@ -56,14 +73,14 @@ var HttpAuthGateway = HttpGateway.extend({
         var gateway, token, refreshData, refreshHeaders, handleSuccess, handleFailure;
 
         gateway = this;
-        token   = store.get('token');
+        token   = store.get(this.tokenStorageLocation);
 
         data = data || {};
 
         handleSuccess = function (response) {
             token = _.extend(token, response);
 
-            store.set('token', token);
+            store.set(this.tokenStorageLocation, token);
 
             gateway.apiRequest(method, path, data, headers).then(resolve, reject);
         };
