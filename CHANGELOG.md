@@ -1,3 +1,7 @@
+## [v1.1.0](https://github.com/synapsestudios/synapse-common/compare/v1.0.0...v1.1.0) - 02/17/2015
+### Feature Updates
+- [#32](https://github.com/synapsestudios/synapse-common/pull/32) Extract localStorage key and `Authorization` header prefixes into to separate properties in `auth-gateway`.
+
 ## [v1.0.0](https://github.com/synapsestudios/synapse-common/compare/v0.3.0...v1.0.0) - 02/05/2015
 ### Updates
 - [#14](https://github.com/synapsestudios/synapse-common/pull/14) Make Underscore and Q explicit dependencies.
