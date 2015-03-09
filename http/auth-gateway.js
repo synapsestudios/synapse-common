@@ -86,7 +86,15 @@ var HttpAuthGateway = HttpGateway.extend({
         };
 
         handleFailure = function (errors) {
-            // Noop
+            var config = gateway.getConfig();
+
+            store.clear();
+
+            if (config.login_url) {
+                window.location = config.login_url;
+            } else {
+                window.location = '/';
+            }
         };
 
         refreshData = qs.stringify({
