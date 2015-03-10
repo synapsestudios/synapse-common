@@ -1,6 +1,23 @@
 Upgrade Guide
 =============
 
+Pre-1.2.0 -> 1.2.0
+------------------
+
+### (Optional) Add login URI to config
+
+The `auth-gateway` was improved in `1.1.0` so that if the user's access token is expired, it will automatically attempt to exchange the refresh token for a new access token. However, if the attempt to retrieve a new access token fails, (presumably because the refresh token is either invalid or expired,) the `auth-gateway` previously did nothing.
+
+Starting in `1.2.0`, `auth-gateway` responds to this event by removing the old OAuth credentials from localStorage and sending the user to the **login page**. By default, it assumes the location of the login page is `/`. If the login page is at another URI, provide that location in the `login_url` property in your config:
+
+```JavaScript
+// config.js
+module.exports = {
+    api       : {/* ... */},
+    login_url : '/login'
+};
+```
+
 0.3.0 -> 1.0.0
 ------------------
 

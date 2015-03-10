@@ -1,3 +1,9 @@
+## [v1.2.0](https://github.com/synapsestudios/synapse-common/compare/v1.1.0...v1.2.0) - 02/17/2015
+### Feature Updates
+- [#34](https://github.com/synapsestudios/synapse-common/pull/34) Add explicit dependency upon store.
+- [#36](https://github.com/synapsestudios/synapse-common/pull/36) Handle refresh token exchange failure by redirecting to homepage or location in config.
+
+
 ## [v1.1.0](https://github.com/synapsestudios/synapse-common/compare/v1.0.0...v1.1.0) - 02/17/2015
 ### Feature Updates
 - [#32](https://github.com/synapsestudios/synapse-common/pull/32) Extract localStorage key and `Authorization` header prefixes into to separate properties in `auth-gateway`.
