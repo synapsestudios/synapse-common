@@ -1,3 +1,8 @@
+## [v1.2.1] (https://github.com/synapsestudios/synapse-common/compare/v1.2.0...v1.2.1) - 03/23/2015
+### Fixed
+- [#37] (https://github.com/synapsestudios/synapse-common/pull/37) Auth gateway fails to set token after 401 response
+
+
 ## [v1.2.0](https://github.com/synapsestudios/synapse-common/compare/v1.1.0...v1.2.0) - 02/17/2015
 ### Feature Updates
 - [#34](https://github.com/synapsestudios/synapse-common/pull/34) Add explicit dependency upon store.
