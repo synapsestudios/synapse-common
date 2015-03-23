@@ -80,7 +80,7 @@ var HttpAuthGateway = HttpGateway.extend({
         handleSuccess = function (response) {
             token = _.extend(token, response);
 
-            store.set(this.tokenStorageLocation, token);
+            store.set(gateway.tokenStorageLocation, token);
 
             gateway.apiRequest(method, path, data, headers).then(resolve, reject);
         };
