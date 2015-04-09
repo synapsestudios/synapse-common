@@ -105,7 +105,15 @@ var HttpAuthGateway = HttpGateway.extend({
 
         refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
 
-        tokenUri = this.config.oauth.token;
+        if (this.config.oauth && this.config.oauth.token) {
+            tokenUri = this.config.oauth.token;
+        } else {
+            console.warn(
+                'Oauth endpoints not configured. \'token\' and \'login\' endpoints should be set in config.api.oauth'
+            );
+
+            tokenUri = '/oauth/token';
+        }
 
         if (this.config.prefix) {
             tokenUri = prefix + tokenUri;
