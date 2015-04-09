@@ -93,6 +93,10 @@ var HttpGateway = Extendable.extend({
             }
         }
 
+        if (config.prefix) {
+            path = config.prefix + path;
+        }
+
         return {
             hostname        : config.hostname,
             port            : config.port,

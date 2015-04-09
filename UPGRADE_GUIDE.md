@@ -12,12 +12,13 @@ module.exports = {
     api : {
         client_id : '123',
         hostname  : 'localhost',
-        port      : 9000,
         oauth     : {
             logout : '/api/oauth/logout',
             token  : '/api/oauth/token'
         },
-        url : ''
+        port      : 9000,
+        prefix    : '/api',
+        url       : ''
     },
     login_url : '/login'
 };
