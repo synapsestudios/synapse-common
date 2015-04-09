@@ -115,10 +115,6 @@ var HttpAuthGateway = HttpGateway.extend({
             tokenUri = '/oauth/token';
         }
 
-        if (this.config.prefix) {
-            tokenUri = this.config.prefix + tokenUri;
-        }
-
         this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
     }
 
