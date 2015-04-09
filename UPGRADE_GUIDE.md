@@ -1,6 +1,28 @@
 Upgrade Guide
 =============
 
+Pre-1.4.0 -> 1.4.0
+------------------
+### API config should include oauth endpoints and API url
+
+The `auth-gateway` was refactored to expect the oauth token endpoint to be set in the app configuration
+
+```JavaScript
+module.exports = {
+    api : {
+        client_id : '123',
+        hostname  : 'localhost',
+        port      : 9000,
+        oauth     : {
+            logout : '/api/oauth/logout',
+            token  : '/api/oauth/token'
+        },
+        url : ''
+    },
+    login_url : '/login'
+};
+```
+
 Pre-1.2.0 -> 1.2.0
 ------------------
 
