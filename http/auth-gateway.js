@@ -105,7 +105,7 @@ var HttpAuthGateway = HttpGateway.extend({
 
         refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
 
-        this.apiRequest('POST', '/oauth/token', refreshData, refreshHeaders).then(handleSuccess, handleFailure);
+        this.apiRequest('POST', this.config.oauth.token, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
     }
 
 });
