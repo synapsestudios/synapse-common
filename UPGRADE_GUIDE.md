@@ -5,7 +5,7 @@ Pre-1.4.0 -> 1.4.0
 ------------------
 ### API config should include oauth endpoints and API url
 
-The `auth-gateway` was refactored to expect the oauth token endpoint to be set in the app configuration. Further, the api URL and api proxy prefix are requiredto be set in the config. Requests to `[hostname]:[port]/api/[uri]` will be proxied to `[url]/[uri]`
+The `auth-gateway` was refactored to expect the oauth token endpoint to be set in the app configuration. Further, the api URL and api proxy prefix are requiredto be set in the config. Requests to `[api.hostname]:[api.port]/[prefix]/[uri]` will be proxied to `[proxy.hostname]/[uri]`
 
 ```JavaScript
 module.exports = {
