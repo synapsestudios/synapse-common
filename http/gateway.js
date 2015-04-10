@@ -14,7 +14,7 @@ var HttpGateway = Extendable.extend({
             return this.config;
         }
 
-        throw 'You must extend getConfig or set this.config with a hostname and port';
+        throw new Error('You must extend getConfig or set this.config with a hostname and port');
     },
 
     /**

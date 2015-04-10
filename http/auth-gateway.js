@@ -108,11 +108,9 @@ var HttpAuthGateway = HttpGateway.extend({
         if (this.config.oauth && this.config.oauth.token) {
             tokenUri = this.config.oauth.token;
         } else {
-            console.warn(
+            throw new Error(
                 'Oauth endpoints not configured. \'token\' and \'login\' endpoints should be set in config.api.oauth'
             );
-
-            tokenUri = '/oauth/token';
         }
 
         this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
