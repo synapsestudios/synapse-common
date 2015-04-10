@@ -1,3 +1,8 @@
+## [v1.4.0] (https://github.com/synapsestudios/synapse-common/compare/v1.3.1...v1.4.0) - 04/10/2015
+### Fixed
+- [#40] (https://github.com/synapsestudios/synapse-common/pull/40) Extra configuration for API prefix and token/login endpoints
+
+
 ## [v1.2.1] (https://github.com/synapsestudios/synapse-common/compare/v1.2.0...v1.2.1) - 03/23/2015
 ### Fixed
 - [#37] (https://github.com/synapsestudios/synapse-common/pull/37) Auth gateway fails to set token after 401 response
