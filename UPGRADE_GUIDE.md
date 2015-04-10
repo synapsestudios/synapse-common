@@ -13,8 +13,8 @@ module.exports = {
         client_id : '123',
         hostname  : 'localhost',
         oauth     : {
-            logout : '/api/oauth/logout',
-            token  : '/api/oauth/token'
+            logout : '/oauth/logout',
+            token  : '/oauth/token'
         },
         port   : 9000,
         prefix : '/api'
