@@ -70,7 +70,7 @@ var HttpAuthGateway = HttpGateway.extend({
      */
     handle401 : function(resolve, reject, method, path, data, headers)
     {
-        var gateway, token, refreshData, refreshHeaders, handleSuccess, handleFailure;
+        var gateway, token, refreshData, refreshHeaders, handleSuccess, handleFailure, tokenUri;
 
         gateway = this;
         token   = store.get(this.tokenStorageLocation);
@@ -105,7 +105,15 @@ var HttpAuthGateway = HttpGateway.extend({
 
         refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
 
-        this.apiRequest('POST', '/oauth/token', refreshData, refreshHeaders).then(handleSuccess, handleFailure);
+        if (this.config.oauth && this.config.oauth.token) {
+            tokenUri = this.config.oauth.token;
+        } else {
+            throw new Error(
+                'Oauth endpoints not configured. \'token\' and \'login\' endpoints should be set in config.api.oauth'
+            );
+        }
+
+        this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
     }
 
 });
