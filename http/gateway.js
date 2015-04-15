@@ -1,3 +1,4 @@
+/* globals File, FileReader, Buffer, Uint8Array */
 'use strict';
 
 var _            = require('underscore');
@@ -28,7 +29,7 @@ var HttpGateway = Extendable.extend({
      */
     apiRequest : function(method, path, data, headers)
     {
-        var gateway = this;
+        var reader, boundaryKey, gateway = this;
 
         if (_.isUndefined(headers)) {
             headers = {};
@@ -39,6 +40,12 @@ var HttpGateway = Extendable.extend({
 
             _.extend(options.headers, headers);
 
+            if (data instanceof File) {
+                boundaryKey = Math.random().toString(16);
+                options.headers['Content-Type'] = 'multipart/form-data; boundary=' + boundaryKey;
+                options.headers['Content-Length'] = data.size;
+            }
+
             var req = (gateway.getConfig().secure ? https : http).request(options, function(response) {
                 var responseText = '';
 
@@ -47,7 +54,7 @@ var HttpGateway = Extendable.extend({
                 });
 
                 response.on('end', function() {
-                    var responseData, shouldReject;
+                    var responseData;
 
                     try {
                         responseData = JSON.parse(responseText);
@@ -68,15 +75,73 @@ var HttpGateway = Extendable.extend({
             });
 
             if (data && method !== 'GET') {
-                if (_.isObject(data)) {
+                if (data instanceof File) {
+                    reader = new FileReader();
+                    reader.onloadend = function () {
+                        req.write(gateway.getUploadPayload(data, reader.result, boundaryKey));
+                        req.end();
+                    };
+                    reader.readAsArrayBuffer(data);
+                } else if (_.isObject(data)) {
                     data = JSON.stringify(data);
+                    req.write(data);
+                    req.end();
+                } else {
+                    req.end();
                 }
-
-                req.write(data);
+            } else {
+                req.end();
             }
-
-            req.end();
         });
+    },
+
+    /**
+     * Get a Uint8Array that can be passed to request.write() to upload a file
+     *
+     * @param  {File} file                   File object
+     * @param  {ArrayBuffer} fileArrayBuffer
+     * @param  {String} boundaryKey
+     * @return {Uint8Array}
+     */
+    getUploadPayload : function(file, fileArrayBuffer, boundaryKey)
+    {
+        var prefix, suffix, dataString, payloadString, payloadTypedArray;
+
+        prefix        = this.getBodyPrefixForFileUpload(file, boundaryKey);
+        suffix        = '\r\n--' + boundaryKey + '--\r\n';
+        dataString    = this.convertArrayBufferToString(fileArrayBuffer);
+        payloadString = prefix + dataString + suffix;
+
+        payloadTypedArray = new Uint8Array(payloadString.length);
+        for (var i = 0; i < payloadString.length; i += 1) {
+            payloadTypedArray[i] = payloadString.charCodeAt(i);
+        }
+
+        return payloadTypedArray;
+    },
+
+    /**
+     * Convert an ArrayBuffer to a binary string
+     *
+     * @param  {ArrayBuffer} arrayBuffer
+     * @return {String}
+     */
+    convertArrayBufferToString : function(arrayBuffer)
+    {
+        var buffer;
+
+        buffer = new Buffer(new Uint8Array(arrayBuffer));
+
+        return buffer.toString('binary');
+    },
+
+    getBodyPrefixForFileUpload : function(file, boundaryKey)
+    {
+        return (
+            '--' + boundaryKey + '\r\n' +
+            'Content-Disposition: form-data; name="file"; filename="' + file.name + '"\r\n' +
+            'Content-Type: application/octet-stream\r\n\r\n'
+        );
     },
 
     getRequestOptions : function(method, path, data)
