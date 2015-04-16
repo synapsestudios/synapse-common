@@ -135,6 +135,13 @@ var HttpGateway = Extendable.extend({
         return buffer.toString('binary');
     },
 
+    /**
+     * Prepare headers for file payload section of the request
+     *
+     * @param file
+     * @param boundaryKey
+     * @returns {string}
+     */
     getBodyPrefixForFileUpload : function(file, boundaryKey)
     {
         return (
