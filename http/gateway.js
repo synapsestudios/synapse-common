@@ -83,7 +83,6 @@ var HttpGateway = Extendable.extend({
                     };
                     reader.readAsArrayBuffer(data);
                 } else if (_.isObject(data)) {
-                    data = JSON.stringify(data);
                     req.write(data);
                     req.end();
                 } else {
