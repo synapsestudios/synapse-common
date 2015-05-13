@@ -39,14 +39,14 @@ module.exports = Fluxxor.createStore({
     {
         var store = this;
 
-        this.mqls = _.map(params.queries, function(query, alias) {
+        this.mqls = _.mapObject(params.queries, function (query, alias) {
             var mql = {
                 matches : alias === params.default
             };
 
             if (
                 typeof window !== 'undefined' &&
-                typeof window.matchMedia !== 'undefined'
+                typeof window.matchMedia === 'function'
             ) {
                 mql = window.matchMedia(query);
 
@@ -62,7 +62,7 @@ module.exports = Fluxxor.createStore({
      */
     getMatches : function()
     {
-        return _.map(this.mqls, function (query) {
+        return _.mapObject(this.mqls, function (query) {
             return query.matches;
         });
     },
