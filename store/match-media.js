@@ -13,7 +13,7 @@ var Fluxxor = require('fluxxor');
  *     queries : {
  *         alias1 : 'some-media-query-string'
  *     },
- *     default : alias1
+ *     default : 'alias1'
  * };
  *
  * modules.exports = {
@@ -22,9 +22,16 @@ var Fluxxor = require('fluxxor');
  *
  * In a component's getStateFromFlux method:
  *
- * this.setState({
+ * return {
  *     mq : matchMediaStore.getMatches()
- * });
+ * };
+ * 
+ * getMatches() returns an object of boolean values corresponding to the configured media queries
+ * {
+ *     alias1 : true
+ * }
+ * 
+ * When rendering on the server the default query is set to true
  */
 module.exports = Fluxxor.createStore({
 
@@ -50,6 +57,9 @@ module.exports = Fluxxor.createStore({
         });
     },
 
+    /**
+     * Returns an object of boolean values corresponding to the currently matched media queries.
+     */
     getMatches : function()
     {
         return _.map(this.mqls, function (query) {
