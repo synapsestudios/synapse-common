@@ -22,7 +22,7 @@ describe('http-gateway', function() {
         httpGateway = new HttpGateway();
     });
 
-    describe('_toQuery', function() {
+    describe('toQuery', function() {
         it('converts a simple request data object into query string correctly', function() {
             var requestData = {
                 one: 'foo',
@@ -31,7 +31,7 @@ describe('http-gateway', function() {
 
             var expectedQueryString = 'one=foo&two=bar';
 
-            expect(httpGateway._toQuery(requestData)).to.equal(expectedQueryString);
+            expect(httpGateway.toQuery(requestData)).to.equal(expectedQueryString);
         });
 
         it('converts a request data object with an array into a query string correctly', function() {
@@ -41,7 +41,7 @@ describe('http-gateway', function() {
 
             var expectedQueryString = 'foo%5B%5D=1&foo%5B%5D=2&foo%5B%5D=3';
 
-            expect(httpGateway._toQuery(requestData)).to.equal(expectedQueryString);
+            expect(httpGateway.toQuery(requestData)).to.equal(expectedQueryString);
         });
 
         it('converts a request data object with nested objects into a query string correctly', function() {
@@ -51,7 +51,7 @@ describe('http-gateway', function() {
 
             var expectedQueryString = 'foo%5Bbar%5D=1&foo%5Bbaz%5D=2';
 
-            expect(httpGateway._toQuery(requestData)).to.equal(expectedQueryString);
+            expect(httpGateway.toQuery(requestData)).to.equal(expectedQueryString);
         });
     });
 });
