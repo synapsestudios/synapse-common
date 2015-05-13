@@ -1,5 +1,5 @@
-'use strict';
 /* globals window */
+'use strict';
 
 var _       = require('underscore');
 var Fluxxor = require('fluxxor');
@@ -25,12 +25,12 @@ var Fluxxor = require('fluxxor');
  * return {
  *     mq : matchMediaStore.getMatches()
  * };
- * 
+ *
  * getMatches() returns an object of boolean values corresponding to the configured media queries
  * {
  *     alias1 : true
  * }
- * 
+ *
  * When rendering on the server the default query is set to true
  */
 module.exports = Fluxxor.createStore({
