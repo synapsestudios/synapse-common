@@ -21,8 +21,8 @@ describe('MatchMediaStore', function() {
             var matches = store.getMatches();
 
             expect(matches).to.be.an('object');
-            expect(matches.maxWidth).to.false;
-            expect(matches.minWidth).to.true;
+            expect(matches.maxWidth).to.be.false;
+            expect(matches.minWidth).to.be.true;
         });
     });
 
@@ -47,8 +47,8 @@ describe('MatchMediaStore', function() {
 
             var matches = store.getMatches();
 
-            expect(matches.maxWidth).to.true;
-            expect(matches.minWidth).to.false;
+            expect(matches.maxWidth).to.be.true;
+            expect(matches.minWidth).to.be.false;
         });
     });
 });
