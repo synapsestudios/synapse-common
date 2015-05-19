@@ -1,3 +1,7 @@
+## [v1.5.0] (https://github.com/synapsestudios/synapse-common/compare/v1.4.1...v1.5.0) - 2015-05-19
+### Feature Updates
+ - #43 (https://github.com/synapsestudios/synapse-common/pull/43) MatchMediaStore can be rendered server-side
+
 ## [v1.4.1] (https://github.com/synapsestudios/synapse-common/compare/v1.4.0...v1.4.1) - 2015-04-23
 ### Feature Updates
 - [#41] (https://github.com/synapsestudios/synapse-common/pull/41) Updated gateways (auth and regular) to support uploads
