@@ -51,4 +51,18 @@ describe('MatchMediaStore', function() {
             expect(matches.minWidth).to.be.false;
         });
     });
+
+    describe('backwards compatibility', function() {
+        it('accepts the pre 1.5.0 format', function() {
+            var store = new MatchMedia({
+                maxWidth : '(max-width: 1px)',
+                minWidth : '(min-width: 1px)'
+            });
+
+            var matches = store.getMatches();
+
+            expect(matches.maxWidth).to.be.false;
+            expect(matches.minWidth).to.be.true;
+        });
+    });
 });

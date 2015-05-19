@@ -37,11 +37,21 @@ module.exports = Fluxxor.createStore({
 
     initialize : function(params)
     {
-        var store = this;
+        var defaultMatch, queries, store;
 
-        this.mqls = _.mapObject(params.queries, function (query, alias) {
+        store = this;
+
+        if (_.has(params, 'queries') && _.has(params, 'default')) {
+            queries      = params.queries;
+            defaultMatch = params.default;
+        } else {
+            queries      = params;
+            defaultMatch = null;
+        }
+
+        this.mqls = _.mapObject(queries, function (query, alias) {
             var mql = {
-                matches : alias === params.default
+                matches : alias === defaultMatch
             };
 
             if (
