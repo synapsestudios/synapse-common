@@ -79,7 +79,12 @@ module.exports = Fluxxor.createStore({
 
     fromObject : function(state)
     {
-        this.mqls = state.mqls;
+        if (
+            typeof window === 'undefined' ||
+            typeof window.matchMedia !== 'function'
+        ) {
+            this.mqls = state.mqls;
+        }
     },
 
     toObject : function()
