@@ -1,3 +1,7 @@
+## [v1.5.1] (https://github.com/synapsestudios/synapse-common/compare/v1.5.0...v1.5.1) - 2015-05-19
+### Fixed
+- [#44] (https://github.com/synapsestudios/synapse-common/pull/40) Match media store doesn't overwrite itself
+
 ## [v1.5.0] (https://github.com/synapsestudios/synapse-common/compare/v1.4.1...v1.5.0) - 2015-05-19
 ### Feature Updates
  - #43 (https://github.com/synapsestudios/synapse-common/pull/43) MatchMediaStore can be rendered server-side
