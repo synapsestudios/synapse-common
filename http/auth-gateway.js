@@ -70,10 +70,17 @@ var HttpAuthGateway = HttpGateway.extend({
      *     "scope"        : null,
      *     "user_id"      : "1"
      * }
+     *
+     * @param  {Function} resolve  Success callback of original request
+     * @param  {Function} reject   Failre callback of original request
+     * @param  {String}   method   HTTP method of original request
+     * @param  {String}   path     URI path of original request
+     * @param  {Object}   data     Data sent in original request
+     * @param  {Object}   headers  Headers sent in original request
      */
     handle401 : function(resolve, reject, method, path, data, headers)
     {
-        var gateway, token, refreshData, refreshHeaders, handleSuccess, handleFailure, tokenUri;
+        var gateway, token, handleSuccess, handleFailure;
 
         gateway = this;
         token   = store.get(this.tokenStorageLocation);
@@ -83,53 +90,89 @@ var HttpAuthGateway = HttpGateway.extend({
 
             data = data || {};
 
-            handleSuccess = function (response) {
-                token = _.extend(token, response);
+            handleSuccess = _(this.handleTokenExchangeSuccess)
+                .partial(token, method, path, data, headers, resolve, reject, response);
 
-                store.set(gateway.tokenStorageLocation, token);
-
-                gateway.apiRequest(method, path, data, headers).then(resolve, reject);
-
-                store.set(REFRESHING_TOKEN, false);
-                dispatcher.emit('TOKEN_REFRESH_SUCCESS');
-            };
-
-            handleFailure = function (errors) {
-                var config = gateway.getConfig();
-
-                store.clear();
-
-                if (config.login_url) {
-                    window.location = config.login_url;
-                } else {
-                    window.location = '/';
-                }
-            };
-
-            refreshData = qs.stringify({
-                client_id     : this.config.client_id,
-                grant_type    : 'refresh_token',
-                refresh_token : token.refresh_token
-            });
-
-            refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
-
-            if (this.config.oauth && this.config.oauth.token) {
-                tokenUri = this.config.oauth.token;
-            } else {
-                throw new Error(
-                    'Oauth endpoints not configured. \'token\' and \'login\' endpoints should be set in config.api.oauth'
-                );
-            }
-
-            this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
+            this.makeTokenExchangeRequest(handleSuccess, this.handleTokenExchangeFailure);
         } else {
             dispatcher.on('TOKEN_REFRESH_SUCCESS', function () {
                 gateway.apiRequest(method, path, data, headers).then(resolve, reject);
             });
         }
-    }
+    },
 
+    /**
+     * Handle successful exchange of refresh token for new access token by:
+     *     1. Saving the token details in localStorage
+     *     2. Re-trying the API request that initially failed with a 401
+     *     3. Disabling the localStorage flag that says we are currently doing a token exchange
+     *     4. Emit an event to notify other 401-failed API calls that it's time to re-try.
+     *
+     * @param  {Object}   token    Token data currently in localStorage
+     * @param  {String}   method   HTTP method of original request
+     * @param  {String}   path     URI path of original request
+     * @param  {Object}   data     Data sent in original request
+     * @param  {Object}   headers  Headers sent in original request
+     * @param  {Function} resolve  Success callback of original request
+     * @param  {Function} reject   Failre callback of original request
+     * @param  {Object}   response Response of refresh token exchange request
+     */
+    handleTokenExchangeSuccess : function(token, method, path, data, headers, resolve, reject, response)
+    {
+        token = _.extend(token, response);
+
+        store.set(this.tokenStorageLocation, token);
+
+        this.apiRequest(method, path, data, headers).then(resolve, reject);
+
+        store.set(REFRESHING_TOKEN, false);
+        dispatcher.emit('TOKEN_REFRESH_SUCCESS');
+    },
+
+    /**
+     * Handle a failure to exchange a refresh token for a new access token by routing to login URL
+     */
+    handleTokenExchangeFailure : function()
+    {
+        var config = this.getConfig();
+
+        store.clear();
+
+        if (config.login_url) {
+            window.location = config.login_url;
+        } else {
+            window.location = '/';
+        }
+    },
+
+    /**
+     * Make a request to the API to exchange a refresh token for a new access token
+     *
+     * @param  {Function} handleSuccess Callback to handle success
+     * @param  {Function} handleFailure Callback to handle failure
+     */
+    makeTokenExchangeRequest : function(handleSuccess, handleFailure)
+    {
+        var refreshData, refreshHeaders, tokenUri;
+
+        refreshData = qs.stringify({
+            client_id     : this.config.client_id,
+            grant_type    : 'refresh_token',
+            refresh_token : token.refresh_token
+        });
+
+        refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
+
+        if (this.config.oauth && this.config.oauth.token) {
+            tokenUri = this.config.oauth.token;
+        } else {
+            throw new Error(
+                'Oauth endpoints not configured. \'token\' and \'login\' endpoints should be set in config.api.oauth'
+            );
+        }
+
+        this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
+    }
 });
 
 module.exports = HttpAuthGateway;
