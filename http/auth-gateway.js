@@ -6,7 +6,7 @@ var qs          = require('querystring');
 var _           = require('underscore');
 var dispatcher  = require('../lib/dispatcher');
 
-var REFRESHING_TOKEN = 'refreshingAccessToken';
+var refreshingToken = false;
 
 var HttpAuthGateway = HttpGateway.extend({
 
@@ -85,15 +85,19 @@ var HttpAuthGateway = HttpGateway.extend({
         gateway = this;
         token   = store.get(this.tokenStorageLocation);
 
-        if (store.get(REFRESHING_TOKEN) !== true) {
-            store.set(REFRESHING_TOKEN, true);
+        if (refreshingToken === false) {
+            refreshingToken = true;
 
             data = data || {};
 
-            handleSuccess = _(this.handleTokenExchangeSuccess)
-                .partial(token, method, path, data, headers, resolve, reject, response);
+            handleSuccess = _(this.handleTokenExchangeSuccess.bind(this))
+                .partial(token, method, path, data, headers, resolve, reject);
 
-            this.makeTokenExchangeRequest(handleSuccess, this.handleTokenExchangeFailure);
+            this.makeTokenExchangeRequest(
+                token.refresh_token,
+                handleSuccess,
+                this.handleTokenExchangeFailure
+            );
         } else {
             dispatcher.on('TOKEN_REFRESH_SUCCESS', function () {
                 gateway.apiRequest(method, path, data, headers).then(resolve, reject);
@@ -123,10 +127,10 @@ var HttpAuthGateway = HttpGateway.extend({
 
         store.set(this.tokenStorageLocation, token);
 
-        this.apiRequest(method, path, data, headers).then(resolve, reject);
-
-        store.set(REFRESHING_TOKEN, false);
+        refreshingToken = false;
         dispatcher.emit('TOKEN_REFRESH_SUCCESS');
+
+        this.apiRequest(method, path, data, headers).then(resolve, reject);
     },
 
     /**
@@ -151,14 +155,14 @@ var HttpAuthGateway = HttpGateway.extend({
      * @param  {Function} handleSuccess Callback to handle success
      * @param  {Function} handleFailure Callback to handle failure
      */
-    makeTokenExchangeRequest : function(handleSuccess, handleFailure)
+    makeTokenExchangeRequest : function(refreshToken, handleSuccess, handleFailure)
     {
         var refreshData, refreshHeaders, tokenUri;
 
         refreshData = qs.stringify({
             client_id     : this.config.client_id,
             grant_type    : 'refresh_token',
-            refresh_token : token.refresh_token
+            refresh_token : refreshToken
         });
 
         refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
