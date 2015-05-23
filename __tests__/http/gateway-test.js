@@ -13,9 +13,9 @@ describe('http-gateway', function() {
         HttpGateway = proxyquire(
             '../../http/gateway',
             {
-                'q'       : sinon.spy(),
-                'http'    : sinon.spy(),
-                'https'   : sinon.spy()
+                q     : sinon.spy(),
+                http  : sinon.spy(),
+                https : sinon.spy()
             }
         );
 
