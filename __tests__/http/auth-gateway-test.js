@@ -45,7 +45,7 @@ describe('auth-gateway', function () {
     });
 
     describe('handle401', function () {
-        var response, sendRequest, tokenRequests, apiCalls;
+        var response, sendRequest, tokenRequests, apiCalls, tokenExchangeRequests;
 
         beforeEach(function () {
             apiCalls = [];
@@ -61,12 +61,27 @@ describe('auth-gateway', function () {
             sendRequest = function () {
                 authGateway.apiRequest('GET', '/foo', {}, {});
             };
+
+            tokenExchangeRequests = function () {
+                return apiCalls.filter(function (path) {
+                    return path === TOKEN_URI;
+                }).length;
+            };
         });
 
         it('makes a request to get a new access token if the response is 401', function () {
             sendRequest();
 
-            expect(1).to.equal(1);
+            expect(tokenExchangeRequests()).to.equal(1);
+        });
+
+        it('does not make multiple token refresh requests if multiple parallel responses return 401', function () {
+            sendRequest();
+            sendRequest();
+            sendRequest();
+            sendRequest();
+
+            expect(tokenExchangeRequests()).to.equal(1);
         });
     });
 });
