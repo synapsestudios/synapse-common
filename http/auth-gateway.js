@@ -4,6 +4,9 @@ var HttpGateway = require('./gateway');
 var store       = require('store');
 var qs          = require('querystring');
 var _           = require('underscore');
+var dispatcher  = require('../lib/dispatcher');
+
+var REFRESHING_TOKEN = 'refreshingAccessToken';
 
 var HttpAuthGateway = HttpGateway.extend({
 
@@ -75,45 +78,56 @@ var HttpAuthGateway = HttpGateway.extend({
         gateway = this;
         token   = store.get(this.tokenStorageLocation);
 
-        data = data || {};
+        if (store.get(REFRESHING_TOKEN) !== true) {
+            store.set(REFRESHING_TOKEN, true);
 
-        handleSuccess = function (response) {
-            token = _.extend(token, response);
+            data = data || {};
 
-            store.set(gateway.tokenStorageLocation, token);
+            handleSuccess = function (response) {
+                token = _.extend(token, response);
 
-            gateway.apiRequest(method, path, data, headers).then(resolve, reject);
-        };
+                store.set(gateway.tokenStorageLocation, token);
 
-        handleFailure = function (errors) {
-            var config = gateway.getConfig();
+                gateway.apiRequest(method, path, data, headers).then(resolve, reject);
 
-            store.clear();
+                store.set(REFRESHING_TOKEN, false);
+                dispatcher.emit('TOKEN_REFRESH_SUCCESS');
+            };
 
-            if (config.login_url) {
-                window.location = config.login_url;
+            handleFailure = function (errors) {
+                var config = gateway.getConfig();
+
+                store.clear();
+
+                if (config.login_url) {
+                    window.location = config.login_url;
+                } else {
+                    window.location = '/';
+                }
+            };
+
+            refreshData = qs.stringify({
+                client_id     : this.config.client_id,
+                grant_type    : 'refresh_token',
+                refresh_token : token.refresh_token
+            });
+
+            refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
+
+            if (this.config.oauth && this.config.oauth.token) {
+                tokenUri = this.config.oauth.token;
             } else {
-                window.location = '/';
+                throw new Error(
+                    'Oauth endpoints not configured. \'token\' and \'login\' endpoints should be set in config.api.oauth'
+                );
             }
-        };
 
-        refreshData = qs.stringify({
-            client_id     : this.config.client_id,
-            grant_type    : 'refresh_token',
-            refresh_token : token.refresh_token
-        });
-
-        refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
-
-        if (this.config.oauth && this.config.oauth.token) {
-            tokenUri = this.config.oauth.token;
+            this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
         } else {
-            throw new Error(
-                'Oauth endpoints not configured. \'token\' and \'login\' endpoints should be set in config.api.oauth'
-            );
+            dispatcher.on('TOKEN_REFRESH_SUCCESS', function () {
+                gateway.apiRequest(method, path, data, headers).then(resolve, reject);
+            });
         }
-
-        this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
     }
 
 });
