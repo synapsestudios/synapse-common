@@ -45,17 +45,24 @@ describe('auth-gateway', function () {
     });
 
     describe('handle401', function () {
-        var response, sendRequest, tokenRequests, apiCalls, tokenExchangeRequests;
+        var response, failWith401, sendRequest, tokenRequests, apiCalls, tokenExchangeRequests;
 
         beforeEach(function () {
-            apiCalls = [];
-            response = new EventEmitter();
-            response.statusCode = 401;
+            apiCalls    = [];
+            response    = new EventEmitter();
+            failWith401 = true;
 
             https.request = function (options, callback) {
                 apiCalls.push(options.path);
+
+                response.statusCode = (options.path === TOKEN_URI) ?
+                    200 :
+                    (failWith401 ? 401 : 200);
                 callback(response);
-                response.emit('end');
+
+                if (options.path !== TOKEN_URI) {
+                    response.emit('end');
+                }
             };
 
             sendRequest = function () {
@@ -82,6 +89,19 @@ describe('auth-gateway', function () {
             sendRequest();
 
             expect(tokenExchangeRequests()).to.equal(1);
+        });
+
+        it('refreshes token every time a request returns 401 if not currently refreshing the token', function () {
+            sendRequest();
+
+            failWith401 = false;
+            sendRequest();
+            sendRequest();
+
+            failWith401 = true;
+            sendRequest();
+
+            expect(tokenExchangeRequests()).to.equal(3);
         });
     });
 });
