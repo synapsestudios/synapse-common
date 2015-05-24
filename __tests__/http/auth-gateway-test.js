@@ -85,23 +85,8 @@ describe('auth-gateway', function () {
         it('does not make multiple token refresh requests if multiple parallel responses return 401', function () {
             sendRequest();
             sendRequest();
-            sendRequest();
-            sendRequest();
 
             expect(tokenExchangeRequests()).to.equal(1);
-        });
-
-        it('refreshes token every time a request returns 401 if not currently refreshing the token', function () {
-            sendRequest();
-
-            failWith401 = false;
-            sendRequest();
-            sendRequest();
-
-            failWith401 = true;
-            sendRequest();
-
-            expect(tokenExchangeRequests()).to.equal(3);
         });
     });
 });
