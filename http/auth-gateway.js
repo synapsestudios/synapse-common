@@ -49,12 +49,12 @@ var HttpAuthGateway = HttpGateway.extend({
     /**
      * {@inheritDoc}
      */
-    handleError : function(response, responseData, resolve, reject, method, path, data, headers)
+    handleError : function(response, responseData, resolve, reject, method, path, data, headers, options)
     {
         if (response.statusCode === 401) {
             var tokenJustUpdated, accessToken;
 
-            accessToken      = headers.Authorization.substring(this.authorizationHeaderPrefix.length);
+            accessToken      = options.headers.Authorization.substring(this.authorizationHeaderPrefix.length);
             tokenJustUpdated = (accessToken !== this.getCurrentAccessToken());
 
             if (tokenJustUpdated) {

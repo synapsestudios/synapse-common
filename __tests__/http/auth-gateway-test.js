@@ -6,8 +6,9 @@ var sinon        = require('sinon');
 var expect       = require('chai').expect;
 var EventEmitter = require('events').EventEmitter;
 
-var TOKEN_URI = 'TOKEN_URI';
-var HOSTNAME  = 'HOSTNAME';
+var TOKEN_URI    = 'TOKEN_URI';
+var HOSTNAME     = 'HOSTNAME';
+var ACCESS_TOKEN = 'ACCESS_TOKEN';
 
 describe('auth-gateway', function () {
     var HttpGateway, AuthGateway, authGateway, https;
@@ -27,7 +28,7 @@ describe('auth-gateway', function () {
         AuthGateway = proxyquire(
             '../../http/auth-gateway',
             {
-                store       : {get : sinon.stub().returns({})},
+                store       : {get : sinon.stub().returns({access_token : ACCESS_TOKEN})},
                 './gateway' : HttpGateway
             }
         );
