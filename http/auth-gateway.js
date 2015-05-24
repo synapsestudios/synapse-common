@@ -41,13 +41,27 @@ var HttpAuthGateway = HttpGateway.extend({
         return options;
     },
 
+    getCurrentAccessToken : function()
+    {
+        return store.get(this.tokenStorageLocation).access_token;
+    },
+
     /**
      * {@inheritDoc}
      */
     handleError : function(response, responseData, resolve, reject, method, path, data, headers)
     {
         if (response.statusCode === 401) {
-            this.handle401(resolve, reject, method, path, data, headers);
+            var tokenJustUpdated, accessToken;
+
+            accessToken      = headers.Authorization.substring(this.authorizationHeaderPrefix.length);
+            tokenJustUpdated = (accessToken !== this.getCurrentAccessToken());
+
+            if (tokenJustUpdated) {
+                this.apiRequest(method, path, data, headers).then(resolve, reject);
+            } else {
+                this.handle401(resolve, reject, method, path, data, headers);
+            }
 
             return;
         }
