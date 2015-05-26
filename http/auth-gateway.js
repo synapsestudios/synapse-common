@@ -4,6 +4,9 @@ var HttpGateway = require('./gateway');
 var store       = require('store');
 var qs          = require('querystring');
 var _           = require('underscore');
+var dispatcher  = require('../lib/dispatcher');
+
+var refreshingToken = false;
 
 var HttpAuthGateway = HttpGateway.extend({
 
@@ -38,13 +41,27 @@ var HttpAuthGateway = HttpGateway.extend({
         return options;
     },
 
+    getCurrentAccessToken : function()
+    {
+        return store.get(this.tokenStorageLocation).access_token;
+    },
+
     /**
      * {@inheritDoc}
      */
-    handleError : function(response, responseData, resolve, reject, method, path, data, headers)
+    handleError : function(response, responseData, resolve, reject, method, path, data, headers, options)
     {
         if (response.statusCode === 401) {
-            this.handle401(resolve, reject, method, path, data, headers);
+            var tokenJustUpdated, accessToken;
+
+            accessToken      = options.headers.Authorization.substring(this.authorizationHeaderPrefix.length);
+            tokenJustUpdated = (accessToken !== this.getCurrentAccessToken());
+
+            if (tokenJustUpdated) {
+                this.apiRequest(method, path, data, headers).then(resolve, reject);
+            } else {
+                this.handle401(resolve, reject, method, path, data, headers);
+            }
 
             return;
         }
@@ -67,40 +84,99 @@ var HttpAuthGateway = HttpGateway.extend({
      *     "scope"        : null,
      *     "user_id"      : "1"
      * }
+     *
+     * @param  {Function} resolve  Success callback of original request
+     * @param  {Function} reject   Failre callback of original request
+     * @param  {String}   method   HTTP method of original request
+     * @param  {String}   path     URI path of original request
+     * @param  {Object}   data     Data sent in original request
+     * @param  {Object}   headers  Headers sent in original request
      */
     handle401 : function(resolve, reject, method, path, data, headers)
     {
-        var gateway, token, refreshData, refreshHeaders, handleSuccess, handleFailure, tokenUri;
+        var gateway, token, handleSuccess, handleFailure;
 
         gateway = this;
         token   = store.get(this.tokenStorageLocation);
 
-        data = data || {};
+        if (refreshingToken === false) {
+            refreshingToken = true;
 
-        handleSuccess = function (response) {
-            token = _.extend(token, response);
+            data = data || {};
 
-            store.set(gateway.tokenStorageLocation, token);
+            handleSuccess = _(this.handleTokenExchangeSuccess.bind(this))
+                .partial(token, method, path, data, headers, resolve, reject);
 
-            gateway.apiRequest(method, path, data, headers).then(resolve, reject);
-        };
+            this.makeTokenExchangeRequest(
+                token.refresh_token,
+                handleSuccess,
+                this.handleTokenExchangeFailure
+            );
+        } else {
+            dispatcher.on('TOKEN_REFRESH_SUCCESS', function () {
+                gateway.apiRequest(method, path, data, headers).then(resolve, reject);
+            });
+        }
+    },
 
-        handleFailure = function (errors) {
-            var config = gateway.getConfig();
+    /**
+     * Handle successful exchange of refresh token for new access token by:
+     *     1. Saving the token details in localStorage
+     *     2. Re-trying the API request that initially failed with a 401
+     *     3. Disabling the localStorage flag that says we are currently doing a token exchange
+     *     4. Emit an event to notify other 401-failed API calls that it's time to re-try.
+     *
+     * @param  {Object}   token    Token data currently in localStorage
+     * @param  {String}   method   HTTP method of original request
+     * @param  {String}   path     URI path of original request
+     * @param  {Object}   data     Data sent in original request
+     * @param  {Object}   headers  Headers sent in original request
+     * @param  {Function} resolve  Success callback of original request
+     * @param  {Function} reject   Failre callback of original request
+     * @param  {Object}   response Response of refresh token exchange request
+     */
+    handleTokenExchangeSuccess : function(token, method, path, data, headers, resolve, reject, response)
+    {
+        token = _.extend(token, response);
 
-            store.clear();
+        store.set(this.tokenStorageLocation, token);
 
-            if (config.login_url) {
-                window.location = config.login_url;
-            } else {
-                window.location = '/';
-            }
-        };
+        refreshingToken = false;
+        dispatcher.emit('TOKEN_REFRESH_SUCCESS');
+
+        this.apiRequest(method, path, data, headers).then(resolve, reject);
+    },
+
+    /**
+     * Handle a failure to exchange a refresh token for a new access token by routing to login URL
+     */
+    handleTokenExchangeFailure : function()
+    {
+        var config = this.getConfig();
+
+        store.clear();
+
+        if (config.login_url) {
+            window.location = config.login_url;
+        } else {
+            window.location = '/';
+        }
+    },
+
+    /**
+     * Make a request to the API to exchange a refresh token for a new access token
+     *
+     * @param  {Function} handleSuccess Callback to handle success
+     * @param  {Function} handleFailure Callback to handle failure
+     */
+    makeTokenExchangeRequest : function(refreshToken, handleSuccess, handleFailure)
+    {
+        var refreshData, refreshHeaders, tokenUri;
 
         refreshData = qs.stringify({
             client_id     : this.config.client_id,
             grant_type    : 'refresh_token',
-            refresh_token : token.refresh_token
+            refresh_token : refreshToken
         });
 
         refreshHeaders = {'Content-Type' : 'application/x-www-form-urlencoded'};
@@ -115,7 +191,6 @@ var HttpAuthGateway = HttpGateway.extend({
 
         this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
     }
-
 });
 
 module.exports = HttpAuthGateway;

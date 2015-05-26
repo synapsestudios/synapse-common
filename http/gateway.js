@@ -63,7 +63,7 @@ var HttpGateway = Extendable.extend({
                     }
 
                     if (response.statusCode >= 400) {
-                        gateway.handleError(response, responseData, resolve, reject, method, path, data, headers);
+                        gateway.handleError(response, responseData, resolve, reject, method, path, data, headers, options);
                     } else {
                         resolve(responseData);
                     }
@@ -250,7 +250,7 @@ var HttpGateway = Extendable.extend({
      * @param  {Object}   data         The failed request body data (if any)
      * @param  {Object}   headers      The extra headers set on the failed request
      */
-    handleError : function(response, responseData, resolve, reject, method, path, data, headers)
+    handleError : function(response, responseData, resolve, reject, method, path, data, headers, options)
     {
         reject(new HttpError(responseData, response));
     }
