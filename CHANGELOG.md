@@ -1,3 +1,7 @@
+## [v1.6.0] (https://github.com/synapsestudios/synapse-common/compare/v1.5.1...v1.6.0) - 2015-05-26
+### Feature Updates
+- [#42] (https://github.com/synapsestudios/synapse-common/pull/42) Avoid sending parallel token refresh requests; instead, just defer re-sending multiple 401'd requests until the original token refresh request is finished
+
 ## [v1.5.1] (https://github.com/synapsestudios/synapse-common/compare/v1.5.0...v1.5.1) - 2015-05-19
 ### Fixed
 - [#44] (https://github.com/synapsestudios/synapse-common/pull/40) Match media store doesn't overwrite itself
