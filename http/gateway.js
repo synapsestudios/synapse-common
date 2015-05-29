@@ -35,7 +35,7 @@ var HttpGateway = Extendable.extend({
             headers = {};
         }
 
-        return Q.Promise(function(resolve, reject) {
+        return Q.Promise(function(resolve, reject, notify) {
             var options = gateway.getRequestOptions(method, path, data);
 
             _.extend(options.headers, headers);
@@ -77,7 +77,19 @@ var HttpGateway = Extendable.extend({
             if (data && method !== 'GET') {
                 if (data instanceof File) {
                     reader = new FileReader();
+
+                    reader.onloadstart = function () {
+                        notify(0);
+                    };
+
+                    reader.onprogress = function (event) {
+                        if (event.lengthComputable) {
+                            notify(Math.round((event.loaded * 100) / event.total));
+                        }
+                    };
+
                     reader.onloadend = function () {
+                        notify(100);
                         req.write(gateway.getUploadPayload(data, reader.result, boundaryKey));
                         req.end();
                     };
