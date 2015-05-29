@@ -1,3 +1,4 @@
+/* globals window */
 'use strict';
 
 var HttpGateway = require('./gateway');
@@ -49,24 +50,23 @@ var HttpAuthGateway = HttpGateway.extend({
     /**
      * {@inheritDoc}
      */
-    handleError : function(response, responseData, resolve, reject, method, path, data, headers, options)
-    {
+    handleError : function(
+        response,
+        responseData,
+        resolve,
+        reject,
+        method,
+        path,
+        data,
+        requestHeaders,
+        options,
+        responseHeaders
+    ) {
         if (response.statusCode === 401) {
-            var tokenJustUpdated, accessToken;
-
-            accessToken      = options.headers.Authorization.substring(this.authorizationHeaderPrefix.length);
-            tokenJustUpdated = (accessToken !== this.getCurrentAccessToken());
-
-            if (tokenJustUpdated) {
-                this.apiRequest(method, path, data, headers).then(resolve, reject);
-            } else {
-                this.handle401(resolve, reject, method, path, data, headers);
-            }
-
-            return;
+            return this.handle401(resolve, reject, method, path, data, requestHeaders);
         }
 
-        HttpGateway.prototype.handleError(response, responseData, resolve, reject, method, path, data, headers);
+        HttpGateway.prototype.handleError(response, responseData, resolve, reject, method, path, data, requestHeaders);
     },
 
     /**
@@ -94,7 +94,15 @@ var HttpAuthGateway = HttpGateway.extend({
      */
     handle401 : function(resolve, reject, method, path, data, headers)
     {
-        var gateway, token, handleSuccess, handleFailure;
+        var gateway, token, handleSuccess, tokenJustUpdated, accessToken;
+
+        accessToken      = headers.Authorization.substring(this.authorizationHeaderPrefix.length);
+        tokenJustUpdated = (accessToken !== this.getCurrentAccessToken());
+
+        if (tokenJustUpdated) {
+            return this.apiRequest(method, path, data, headers)
+                .then(resolve, reject);
+        }
 
         gateway = this;
         token   = store.get(this.tokenStorageLocation);

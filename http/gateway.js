@@ -71,8 +71,9 @@ var HttpGateway = Extendable.extend({
                             method,
                             path,
                             data,
-                            headers,
-                            options
+                            options.headers,
+                            options,
+                            req.xhr.getAllResponseHeaders()
                         );
                     } else {
                         gateway.handleSuccess(
@@ -262,18 +263,28 @@ var HttpGateway = Extendable.extend({
     /**
      * Handle API request errors
      *
-     * @param  {Object}   response     The API response
-     * @param  {Mixed}    responseData The data returned in the response
-     * @param  {Function} resolve      The success callback
-     * @param  {Function} reject       The fail callback
-     * @param  {String}   method       The failed request's method
-     * @param  {String}   path         The failed request's path
-     * @param  {Object}   data         The failed request body data (if any)
-     * @param  {Object}   headers      The extra headers set on the failed request
-     * @param  {Object}   options      The request options
+     * @param  {Object}   response        The API response
+     * @param  {Mixed}    responseData    The data returned in the response
+     * @param  {Function} resolve         The success callback
+     * @param  {Function} reject          The fail callback
+     * @param  {String}   method          The failed request's method
+     * @param  {String}   path            The failed request's path
+     * @param  {Object}   data            The failed request body data (if any)
+     * @param  {Object}   requestHeaders  The extra headers set on the failed request
+     * @param  {Object}   options         The request options
      */
-    handleError : function(response, responseData, resolve, reject, method, path, data, headers, options)
-    {
+    handleError : function(
+        response,
+        responseData,
+        resolve,
+        reject,
+        method,
+        path,
+        data,
+        requestHeaders,
+        options,
+        responseHeaders
+    ) {
         reject(new HttpError(responseData, response));
     }
 
