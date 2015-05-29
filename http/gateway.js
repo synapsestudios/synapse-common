@@ -63,9 +63,24 @@ var HttpGateway = Extendable.extend({
                     }
 
                     if (response.statusCode >= 400) {
-                        gateway.handleError(response, responseData, resolve, reject, method, path, data, headers, options);
+                        gateway.handleError(
+                            response,
+                            responseData,
+                            resolve,
+                            reject,
+                            method,
+                            path,
+                            data,
+                            headers,
+                            options
+                        );
                     } else {
-                        resolve(responseData);
+                        gateway.handleSuccess(
+                            resolve,
+                            responseData,
+                            req.xhr.getAllResponseHeaders(),
+                            response.statusCode
+                        );
                     }
                 });
             });
@@ -224,6 +239,12 @@ var HttpGateway = Extendable.extend({
         }
     },
 
+    handleSuccess : function(resolve, data, headers, statusCode)
+    {
+        // By default only return the data. Can be overridden if necessary.
+        resolve(data);
+    },
+
     /**
      * Encode a string to be used in a URL
      *
@@ -249,6 +270,7 @@ var HttpGateway = Extendable.extend({
      * @param  {String}   path         The failed request's path
      * @param  {Object}   data         The failed request body data (if any)
      * @param  {Object}   headers      The extra headers set on the failed request
+     * @param  {Object}   options      The request options
      */
     handleError : function(response, responseData, resolve, reject, method, path, data, headers, options)
     {
