@@ -1,3 +1,7 @@
+## [v1.6.1](https://github.com/synapsestudios/synapse-common/compare/v1.5.1...v1.6.0) - 2015-06-01
+### Refactors
+- Refactored gateway and auth-gateway to be more extensible
+
 ## [v1.6.0](https://github.com/synapsestudios/synapse-common/compare/v1.5.1...v1.6.0) - 2015-05-26
 ### Feature Updates
 - [#42](https://github.com/synapsestudios/synapse-common/pull/42) Avoid sending parallel token refresh requests; instead, just defer re-sending multiple 401'd requests until the original token refresh request is finished
