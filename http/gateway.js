@@ -63,9 +63,25 @@ var HttpGateway = Extendable.extend({
                     }
 
                     if (response.statusCode >= 400) {
-                        gateway.handleError(response, responseData, resolve, reject, method, path, data, headers, options);
+                        gateway.handleError(
+                            response,
+                            responseData,
+                            resolve,
+                            reject,
+                            method,
+                            path,
+                            data,
+                            options.headers,
+                            options,
+                            req.xhr.getAllResponseHeaders()
+                        );
                     } else {
-                        resolve(responseData);
+                        gateway.handleSuccess(
+                            resolve,
+                            responseData,
+                            req.xhr.getAllResponseHeaders(),
+                            response.statusCode
+                        );
                     }
                 });
             });
@@ -236,6 +252,12 @@ var HttpGateway = Extendable.extend({
         }
     },
 
+    handleSuccess : function(resolve, data, headers, statusCode)
+    {
+        // By default only return the data. Can be overridden if necessary.
+        resolve(data);
+    },
+
     /**
      * Encode a string to be used in a URL
      *
@@ -253,17 +275,28 @@ var HttpGateway = Extendable.extend({
     /**
      * Handle API request errors
      *
-     * @param  {Object}   response     The API response
-     * @param  {Mixed}    responseData The data returned in the response
-     * @param  {Function} resolve      The success callback
-     * @param  {Function} reject       The fail callback
-     * @param  {String}   method       The failed request's method
-     * @param  {String}   path         The failed request's path
-     * @param  {Object}   data         The failed request body data (if any)
-     * @param  {Object}   headers      The extra headers set on the failed request
+     * @param  {Object}   response        The API response
+     * @param  {Mixed}    responseData    The data returned in the response
+     * @param  {Function} resolve         The success callback
+     * @param  {Function} reject          The fail callback
+     * @param  {String}   method          The failed request's method
+     * @param  {String}   path            The failed request's path
+     * @param  {Object}   data            The failed request body data (if any)
+     * @param  {Object}   requestHeaders  The extra headers set on the failed request
+     * @param  {Object}   options         The request options
      */
-    handleError : function(response, responseData, resolve, reject, method, path, data, headers, options)
-    {
+    handleError : function(
+        response,
+        responseData,
+        resolve,
+        reject,
+        method,
+        path,
+        data,
+        requestHeaders,
+        options,
+        responseHeaders
+    ) {
         reject(new HttpError(responseData, response));
     }
 
