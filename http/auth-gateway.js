@@ -121,7 +121,7 @@ var HttpAuthGateway = HttpGateway.extend({
                 this.handleTokenExchangeFailure
             );
 
-            dispatcher.on('TOKEN_REFRESH_SUCCESS', function () {
+            dispatcher.once('TOKEN_REFRESH_SUCCESS', function () {
                 // Delete Authorization header so that it gets replaced with the updated token
                 delete(headers.Authorization);
 
