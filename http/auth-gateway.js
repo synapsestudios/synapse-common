@@ -118,7 +118,7 @@ var HttpAuthGateway = HttpGateway.extend({
             this.makeTokenExchangeRequest(
                 token.refresh_token,
                 handleSuccess,
-                this.handleTokenExchangeFailure
+                _(this.handleTokenExchangeFailure).bind(this)
             );
 
             dispatcher.once('TOKEN_REFRESH_SUCCESS', function () {
@@ -198,7 +198,10 @@ var HttpAuthGateway = HttpGateway.extend({
             );
         }
 
-        this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
+        this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(
+            handleSuccess,
+            handleFailure
+        );
     }
 });
 
