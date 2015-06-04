@@ -1,3 +1,7 @@
+## [v.1.7.1](https://github.com/synapsestudios/synapse-common/compare/v1.7.0...v1.7.1) - 2015-06-04
+### Fixed
+- Various oauth token refresh issues
+
 ## [v.1.7.0](https://github.com/synapsestudios/synapse-common/compare/v1.6.0...v1.7.0) - 2015-06-01
 ### Feature Updates
 - Added support for file upload progress
