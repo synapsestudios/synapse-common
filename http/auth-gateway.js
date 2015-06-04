@@ -118,10 +118,13 @@ var HttpAuthGateway = HttpGateway.extend({
             this.makeTokenExchangeRequest(
                 token.refresh_token,
                 handleSuccess,
-                this.handleTokenExchangeFailure
+                _(this.handleTokenExchangeFailure).bind(this)
             );
-        } else {
-            dispatcher.on('TOKEN_REFRESH_SUCCESS', function () {
+
+            dispatcher.once('TOKEN_REFRESH_SUCCESS', function () {
+                // Delete Authorization header so that it gets replaced with the updated token
+                delete(headers.Authorization);
+
                 gateway.apiRequest(method, path, data, headers).then(resolve, reject);
             });
         }
@@ -145,14 +148,12 @@ var HttpAuthGateway = HttpGateway.extend({
      */
     handleTokenExchangeSuccess : function(token, method, path, data, headers, resolve, reject, response)
     {
-        token = _.extend(token, response);
+        token = _.extend(token, response.data);
 
         store.set(this.tokenStorageLocation, token);
 
         refreshingToken = false;
         dispatcher.emit('TOKEN_REFRESH_SUCCESS');
-
-        this.apiRequest(method, path, data, headers).then(resolve, reject);
     },
 
     /**
@@ -197,7 +198,10 @@ var HttpAuthGateway = HttpGateway.extend({
             );
         }
 
-        this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(handleSuccess, handleFailure);
+        this.apiRequest('POST', tokenUri, refreshData, refreshHeaders).then(
+            handleSuccess,
+            handleFailure
+        );
     }
 });
 
