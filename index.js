@@ -5,7 +5,6 @@ var Dispatcher      = require('./lib/dispatcher');
 var MatchMediaStore = require('./store/match-media');
 var DataProvider    = require('./test-helper/data-provider');
 var FluxComponent   = require('./test-helper/flux-component');
-var MockFlux        = require('./test-helper/mock-flux');
 
 module.exports = {
     Gateway         : Gateway,
@@ -14,6 +13,5 @@ module.exports = {
     Dispatcher      : Dispatcher,
     MatchMediaStore : MatchMediaStore,
     DataProvider    : DataProvider,
-    FluxComponent   : FluxComponent,
-    MockFlux        : MockFlux
+    FluxComponent   : FluxComponent
 };
