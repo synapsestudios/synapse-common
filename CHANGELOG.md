@@ -1,3 +1,7 @@
+## [v.1.8.1](https://github.com/synapsestudios/synapse-common/compare/v1.8.0...v1.8.1) - 2015-06-09
+### Fixed
+- Fix oauth token refresh issue
+
 ## [v.1.8.0](https://github.com/synapsestudios/synapse-common/compare/v1.7.1...v1.8.0) - 2015-06-09
 ### Feature Updates
 - Added index file for easy `require`-ing of modules. e.g. `require('synapse-common').AuthGateway` instead of `require('synapse-common/http/auth-gateway')`
