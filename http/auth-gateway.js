@@ -123,7 +123,7 @@ var HttpAuthGateway = HttpGateway.extend({
 
             dispatcher.once('TOKEN_REFRESH_SUCCESS', function () {
                 // Delete Authorization header so that it gets replaced with the updated token
-                delete(headers.Authorization);
+                delete headers.Authorization;
 
                 gateway.apiRequest(method, path, data, headers).then(resolve, reject);
             });
@@ -148,7 +148,7 @@ var HttpAuthGateway = HttpGateway.extend({
      */
     handleTokenExchangeSuccess : function(token, method, path, data, headers, resolve, reject, response)
     {
-        token = _.extend(token, response.data);
+        token = _.extend(token, response);
 
         store.set(this.tokenStorageLocation, token);
 
