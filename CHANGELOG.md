@@ -1,3 +1,7 @@
+## [v.1.8.2](https://github.com/synapsestudios/synapse-common/compare/v1.8.1...v1.8.2) - 2015-07-15
+### Fixed
+- Fix issue where only the first request was being retried after refreshing an auth token
+
 ## [v.1.8.1](https://github.com/synapsestudios/synapse-common/compare/v1.8.0...v1.8.1) - 2015-06-09
 ### Fixed
 - Fix oauth token refresh issue
