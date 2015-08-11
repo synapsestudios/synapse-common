@@ -1,4 +1,4 @@
-/* globals File, FileReader, Buffer, Uint8Array */
+/* globals Blob, File, FileReader, Buffer, Uint8Array */
 'use strict';
 
 var _            = require('underscore');
@@ -40,7 +40,7 @@ var HttpGateway = Extendable.extend({
 
             _.extend(options.headers, headers);
 
-            if (data instanceof File) {
+            if (data instanceof File || data instanceof Blob) {
                 boundaryKey = Math.random().toString(16);
                 options.headers['Content-Type'] = 'multipart/form-data; boundary=' + boundaryKey;
                 options.headers['Content-Length'] = data.size;
@@ -91,7 +91,7 @@ var HttpGateway = Extendable.extend({
             });
 
             if (data && method !== 'GET') {
-                if (data instanceof File) {
+                if (data instanceof File || data instanceof Blob) {
                     reader = new FileReader();
 
                     reader.onloadstart = function () {
