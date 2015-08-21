@@ -2,7 +2,7 @@
 'use strict';
 
 var HttpGateway = require('./gateway');
-var store       = require('store');
+var store       = require('store2');
 var qs          = require('querystring');
 var _           = require('underscore');
 var dispatcher  = require('../lib/dispatcher');
