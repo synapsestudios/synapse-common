@@ -45,6 +45,9 @@ module.exports = {
         if ( ! href || href === '' || href.charAt(0) === '#')
             return;
 
+        if (event.defaultPrevented || (event.button == 1 || event.metaKey || event.ctrlKey))
+            return;
+
         if (isAnchor && external)
         {
             event.preventDefault();
