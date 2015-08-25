@@ -96,10 +96,11 @@ var HttpAuthGateway = HttpGateway.extend({
     {
         var gateway, token, handleSuccess, tokenJustUpdated, accessToken;
 
-        accessToken      = headers.Authorization.substring(this.authorizationHeaderPrefix.length);
-        tokenJustUpdated = (accessToken !== this.getCurrentAccessToken());
+        accessToken = headers.Authorization.substring(this.authorizationHeaderPrefix.length);
 
-        if (tokenJustUpdated) {
+        // token was just updated
+        if (accessToken !== this.getCurrentAccessToken()) {
+            headers.Authorization = this.authorizationHeaderPrefix + this.getCurrentAccessToken();
             return this.apiRequest(method, path, data, headers)
                 .then(resolve, reject);
         }
