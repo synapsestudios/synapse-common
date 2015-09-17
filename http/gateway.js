@@ -1,7 +1,7 @@
 /* globals Blob, File, FileReader, Buffer, Uint8Array */
 'use strict';
 
-var _            = require('underscore');
+var _            = require('lodash');
 var Q            = require('q');
 var http         = require('http');
 var https        = require('https');

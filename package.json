@@ -17,9 +17,9 @@
     "url": "https://github.com/synapsestudios/synapse-common.git"
   },
   "dependencies": {
+    "lodash": "3.6.0",
     "q": "~1.0.0",
-    "store2": "2.3.0",
-    "underscore": "1.8.3"
+    "store2": "2.3.0"
   },
   "peerDependencies": {
     "fluxxor": "^1.4"
@@ -43,12 +43,10 @@
     "karma-phantomjs-launcher": "0.1.4",
     "mocha": "1.21.4",
     "proxyquireify": "1.1.0",
-    "q": "1.0.1",
     "react-tools": "0.11.1",
     "reactify": "0.14.0",
     "sinon": "1.10.3",
     "sinon-chai": "2.5.0",
-    "underscore": "1.6.0",
     "vinyl-source-stream": "0.1.1",
     "watchify": "1.0.2",
     "watchr": "2.4.11"
