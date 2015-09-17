@@ -4,7 +4,7 @@
 var HttpGateway = require('./gateway');
 var store       = require('store2');
 var qs          = require('querystring');
-var _           = require('underscore');
+var _           = require('lodash');
 var dispatcher  = require('../lib/dispatcher');
 
 var refreshingToken = false;
