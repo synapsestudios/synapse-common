@@ -62,7 +62,7 @@ var HttpAuthGateway = HttpGateway.extend({
         options,
         responseHeaders
     ) {
-        if (response.statusCode === 401) {
+        if (response.statusCode === 401 && requestHeaders.Authorization) {
             return this.handle401(resolve, reject, method, path, data, requestHeaders);
         }
 
