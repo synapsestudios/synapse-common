@@ -132,7 +132,6 @@ var HttpAuthGateway = HttpGateway.extend({
         }
 
         dispatcher.once('TOKEN_REFRESH_SUCCESS', function () {
-            debugger;
             // Delete Authorization header so that it gets replaced with the updated token
             delete headers.Authorization;
 
