@@ -113,17 +113,26 @@ var HttpAuthGateway = HttpGateway.extend({
 
             data = data || {};
 
-            handleSuccess = _(this.handleTokenExchangeSuccess.bind(this))
-                .partial(token, method, path, data, headers, resolve, reject);
+            handleSuccess = _.partial(
+                this.handleTokenExchangeSuccess.bind(this),
+                token,
+                method,
+                path,
+                data,
+                headers,
+                resolve,
+                reject
+            );
 
             this.makeTokenExchangeRequest(
                 token.refresh_token,
                 handleSuccess,
-                _(this.handleTokenExchangeFailure).bind(this)
+                _.bind(this.handleTokenExchangeFailure, this)
             );
         }
 
         dispatcher.once('TOKEN_REFRESH_SUCCESS', function () {
+            debugger;
             // Delete Authorization header so that it gets replaced with the updated token
             delete headers.Authorization;
 
