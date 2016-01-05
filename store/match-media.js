@@ -1,7 +1,7 @@
 /* globals window */
 'use strict';
 
-var _       = require('underscore');
+var _       = require('lodash');
 var Fluxxor = require('fluxxor');
 
 /**
@@ -49,7 +49,7 @@ module.exports = Fluxxor.createStore({
             defaultMatch = null;
         }
 
-        this.mqls = _.mapObject(queries, function (query, alias) {
+        this.mqls = _.mapValues(queries, function (query, alias) {
             var mql = {
                 matches : alias === defaultMatch
             };
@@ -72,7 +72,7 @@ module.exports = Fluxxor.createStore({
      */
     getMatches : function()
     {
-        return _.mapObject(this.mqls, function (query) {
+        return _.mapValues(this.mqls, function (query) {
             return query.matches;
         });
     },
