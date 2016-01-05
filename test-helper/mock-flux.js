@@ -1,6 +1,6 @@
 'use strict';
 
-var _     = require('underscore');
+var _     = require('lodash');
 var sinon = require('sinon');
 
 var Flux = function(stores, actions) {
