@@ -1,18 +1,54 @@
+## [v.1.9.5](https://github.com/synapsestudios/synapse-common/compare/v1.9.4...v1.9.5) - 2016-01-05 
+### Fixed
+- [#60](https://github.com/synapsestudios/synapse-common/pull/60)  Replace underscore references with equivalent lodash references.
+
+
+## [v.1.9.4](https://github.com/synapsestudios/synapse-common/compare/v1.9.3...v1.9.4) - 2015-11-24 
+### Fixed
+- [#59](https://github.com/synapsestudios/synapse-common/pull/59)  Tokens aren't refreshing correctly.
+
+
+## [v.1.9.3](https://github.com/synapsestudios/synapse-common/compare/v1.9.1...v1.9.3) - 2015-11-19
+### Changed
+- [#57](https://github.com/synapsestudios/synapse-common/pull/57)  Replace Underscore with Lodash.
+
+### Fixed
+- [#58](https://github.com/synapsestudios/synapse-common/pull/58)  Error when AuthGateway tries to handle 401 response without Authorization request header.
+
+
+## [v.1.9.1](https://github.com/synapsestudios/synapse-common/compare/v1.9.0...v1.9.1) - 2015-09-01
+### Changed
+- [#55](https://github.com/synapsestudios/synapse-common/pull/55)  Swap store with store2.
+- [#56](https://github.com/synapsestudios/synapse-common/pull/56)  Update auth-gateway.js.
+
+
+## [v.1.9.0](https://github.com/synapsestudios/synapse-common/compare/v1.8.3...v1.9.0) - 2015-08-21
+
+
+## [v.1.8.3](https://github.com/synapsestudios/synapse-common/compare/v1.8.2...v1.8.3) - 2015-08-11
+### Added
+- [#54](https://github.com/synapsestudios/synapse-common/pull/54)  Blob data can be uploaded through the http gateway.
+
+
 ## [v.1.8.2](https://github.com/synapsestudios/synapse-common/compare/v1.8.1...v1.8.2) - 2015-07-15
 ### Fixed
 - Fix issue where only the first request was being retried after refreshing an auth token
+
 
 ## [v.1.8.1](https://github.com/synapsestudios/synapse-common/compare/v1.8.0...v1.8.1) - 2015-06-09
 ### Fixed
 - Fix oauth token refresh issue
 
+
 ## [v.1.8.0](https://github.com/synapsestudios/synapse-common/compare/v1.7.1...v1.8.0) - 2015-06-09
 ### Feature Updates
 - Added index file for easy `require`-ing of modules. e.g. `require('synapse-common').AuthGateway` instead of `require('synapse-common/http/auth-gateway')`
 
+
 ## [v.1.7.1](https://github.com/synapsestudios/synapse-common/compare/v1.7.0...v1.7.1) - 2015-06-04
 ### Fixed
 - Various oauth token refresh issues
+
 
 ## [v.1.7.0](https://github.com/synapsestudios/synapse-common/compare/v1.6.0...v1.7.0) - 2015-06-01
 ### Feature Updates
@@ -21,17 +57,21 @@
 ### Refactors
 - Refactored gateway and auth-gateway to be more extensible
 
+
 ## [v1.6.0](https://github.com/synapsestudios/synapse-common/compare/v1.5.1...v1.6.0) - 2015-05-26
 ### Feature Updates
 - [#42](https://github.com/synapsestudios/synapse-common/pull/42) Avoid sending parallel token refresh requests; instead, just defer re-sending multiple 401'd requests until the original token refresh request is finished
+
 
 ## [v1.5.1](https://github.com/synapsestudios/synapse-common/compare/v1.5.0...v1.5.1) - 2015-05-19
 ### Fixed
 - [#44](https://github.com/synapsestudios/synapse-common/pull/44) Match media store doesn't overwrite itself
 
+
 ## [v1.5.0](https://github.com/synapsestudios/synapse-common/compare/v1.4.1...v1.5.0) - 2015-05-19
 ### Feature Updates
  - [#43](https://github.com/synapsestudios/synapse-common/pull/43) MatchMediaStore can be rendered server-side
+
 
 ## [v1.4.1](https://github.com/synapsestudios/synapse-common/compare/v1.4.0...v1.4.1) - 2015-04-23
 ### Feature Updates
