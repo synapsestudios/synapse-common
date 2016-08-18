@@ -1,7 +1,7 @@
 'use strict';
 
 var _        = require('underscore');
-var window   = require('jswindow-shim');
+var window   = require('../../lib/jswindow-shim.js');
 var $        = require('../../loaders/jquery')(window);
 
 module.exports = {

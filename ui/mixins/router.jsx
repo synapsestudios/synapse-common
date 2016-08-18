@@ -2,7 +2,7 @@
 'use strict';
 
 var _        = require('underscore');
-var window   = require('jswindow-shim');
+var window   = require('../../lib/jswindow-shim.js');
 var $        = require('../../loaders/jquery')(window);
 var Router   = require('../../lib/router');
 var mediator = require('../../lib/mediator');
